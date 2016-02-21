@@ -20,13 +20,6 @@
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
                         </a>
-                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                            <i class="fa fa-wrench"></i>
-                        </a>
-                        <ul class="dropdown-menu dropdown-user">
-                            <li><a href="#">Config option 1</a></li>
-                            <li><a href="#">Config option 2</a></li>
-                        </ul>
                     </div>
                 </div>
                 <div class="ibox-content">
@@ -59,7 +52,7 @@
                                         </td>
                                     </form>
                                     <td>
-                                        <a href="#" class="btn btn-outline btn-primary" style="display:none">Edit</a>
+                                        <a href="<?php echo base_url('ctb/box1') ?>" class="btn btn-outline btn-primary" style="display:none">Edit</a>
                                     </td>
                                 </tr>
                                 <tr>
@@ -74,7 +67,7 @@
                                         <div class="i-checks"><label> <input type="radio" class="box1" value="text" name="box2"> <i></i> <span style="display: none">Showed</span> </label></div>
                                     </td>
                                     <td>
-                                        <a href="#" class="btn btn-outline btn-primary" style="display:none">Edit</a>
+                                        <a href="<?php echo base_url('ctb/box2') ?>" class="btn btn-outline btn-primary" style="display:none">Edit</a>
                                     </td>
                                 </tr>
                                 <tr>
