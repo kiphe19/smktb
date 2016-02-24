@@ -10,6 +10,8 @@
     <link href="<?php echo base_url('assets') ?>/css/style.css" rel="stylesheet">
     <link href="<?php echo base_url('assets') ?>/css/plugins/switchery/switchery.css" rel="stylesheet">
 	<link href="<?php echo base_url('assets') ?>/css/plugins/iCheck/custom.css" rel="stylesheet"></link>
+    <link href="<?php echo base_url('assets') ?>/css/plugins/summernote/summernote.css" rel="stylesheet">
+    <link href="<?php echo base_url('assets') ?>/css/plugins/summernote/summernote-bs3.css" rel="stylesheet">
     <script src="<?php echo base_url('assets') ?>/js/jquery-2.1.1.js"></script>
 	<script src="<?php echo base_url('assets') ?>/js/plugins/switchery/switchery.js"></script>
 	<script src="<?php echo base_url('assets') ?>/js/plugins/iCheck/icheck.min.js"></script>
@@ -66,9 +68,10 @@
         </nav>
         </div>
         <?php
-            $url2 = $this->uri->segment(2); 
-            if ($this->uri->segment(2) == $url2 && $url2) {
-            	$this->load->view($url2);
+            $url3 = (!$this->uri->segment(3) && $this->uri->segment(2) == 'box') ? '1' : $this->uri->segment(3);
+            $url = $this->uri->segment(2); 
+            if ($url) {
+            	$this->load->view($url);
             }else {
                 $this->load->view('dashboard'); 
             }
@@ -88,6 +91,7 @@
     <script src="<?php echo base_url('assets') ?>/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
     <script src="<?php echo base_url('assets') ?>/js/inspinia.js"></script>
     <script src="<?php echo base_url('assets') ?>/js/plugins/pace/pace.min.js"></script>
-    <script src="<?php echo base_url('assets') ?>/js/plugins/nestable/jquery.nestable.js"></script>
+    <script src="<?php echo base_url('assets') ?>/js/plugins/summernote/summernote.min.js"></script>
+
 </body>
 </html>
