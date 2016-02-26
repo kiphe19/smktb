@@ -9,19 +9,10 @@ class Ctb extends CI_Controller {
 		$data['box'] = $this->Mtb->selectBox();
 		$this->load->view('index', $data);		
 	}
-	public function box1()
-	{
-		$data['title'] = "Box 1";
-		$this->load->view('index', $data);
-	}
 	public function news()
 	{
 		$data['title'] = "News Text";
-		$this->load->view('index', $data);
-	}
-	public function box2()
-	{
-		$data['title'] = "Box 2";
+		$data['news'] = $this->Mtb->getNews()->row_array();
 		$this->load->view('index', $data);
 	}
 	public function box($id = 1)
@@ -56,11 +47,18 @@ class Ctb extends CI_Controller {
 			echo "Box " . $id . " Gagal Diperbarui";
 		}
 	}
-	// public function form_box1($param = NUll)
-	// {
-	// 	$data['title'] = "Box 1";
-	// 	$this->load->view('index', $data);
-	// }
+	public function addText()
+	{
+		($this->input->method() == "post") ? $this->Mtb->addContentText() : redirect('ctb','refresh') ;
+	}
+	public function deleteContentText()
+	{
+		($this->uri->segment(4)) ? $this->Mtb->deleteContentText($this->uri->segment(3)) : redirect('ctb','refresh') ;
+	}
+	public function editNews()
+	{
+		($this->input->method() == "post") ? $this->Mtb->saveNews() : redirect('ctb','refresh') ;
+	}
 }
 
 /* End of file Ctb.php */

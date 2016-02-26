@@ -26,17 +26,10 @@
                     </div>
                 </div>
                 <div class="ibox-content">
-                    <form>
+                    <form action="<?php echo base_url('ctb/editNews') ?>" method="POST" id="formNews">
                         <div class="form-group">
                             <label>Content</label>
-                            <textarea name="" class="form-control" rows="10" id="textNews">
-                            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-                            tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-                            quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-                            consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-                            cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-                            proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-                            </textarea>
+                            <textarea name="" class="form-control" rows="10" id="textNews"><?php echo $news['content'] ?></textarea>
                         </div>
                         <div class="form-group form-preview">
                             <label>Preview</label>
@@ -56,6 +49,19 @@ $(document).ready(function() {
         var text = $(this).val();
         $('#preview').remove();
         $('.form-preview').append('<marquee id="preview">'+text+'</marquee>')
+    });
+    $('#formNews').submit(function() {
+        var news = $('#textNews').val(),
+        url = $(this).attr('action')
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: {news: news},
+            success: function(resp){
+                alert(resp)
+            }
+        })
+        return false;
     });
 });
 </script>
