@@ -182,7 +182,7 @@ $('a[save]').click(function() {
             type: 'POST',
             data: {id: id, type: a},
             success: function(resp){
-                alert(resp);
+                alert(resp.msg);
             }
         })
     }
