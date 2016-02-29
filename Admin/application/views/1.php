@@ -10,21 +10,9 @@
 				</div>
 			</div>
 			<div class="ibox-content">
-				<!-- <form id="frmVideo">
-					<div class="form-group">
-						<label class="btn btn-success" for="files">
-							<input type="file" name="" id="files" multiple style="display: none;" />
-							<i class="fa fa-plus-circle"></i> Select Files..
-						</label>
-						<div style="width: 75%" aria-valuemax="100" aria-valuemin="0" aria-valuenow="75" role="progressbar" class="progress-bar progress-bar-danger">
-							<span class="sr-only">40% Complete (success)</span>
-						</div>
-					</div>
-					<button type="submit" class="btn btn-flat btn-info"><i class="fa fa-upload"></i> Upload</button>
-				</form> -->
 				<form id="my-awesome-dropzone" class="dropzone dz-clickable" action="#">
 					<div class="dropzone-previews"></div>
-					<button type="submit" class="btn btn-primary pull-right">Submit this form!</button>
+					<button type="submit" class="btn btn-primary pull-right"><i class="fa fa-upload"></i> Upload</button>
 					<div class="dz-default dz-message"><span>Drop files here to upload</span></div></form>
 				</div>
 			</div>
@@ -80,7 +68,7 @@
 			parallelUploads: 5,
 			autoProcessQueue: false,
 			acceptedFiles: 'video/*',
-			
+
 			init: function(){
 				var a = this;
 				this.element.querySelector("button[type=submit]").addEventListener("click", function(e) {
@@ -90,29 +78,4 @@
 				});
 			}
 		};
-		$("#frmVideo").submit(function(e){
-			e.preventDefault();
-
-			var form = new FormData(document.getElementById('frmVideo'));
-			var file = document.getElementById('files').files[0];
-			console.log(file);
-			if (file) {
-				form.append('files', file);
-			}
-			$.ajax({
-				url: "<?php echo base_url('ctb/upload') ?>",
-				type: 'POST',
-				data: form,             
-				cache: false,
-        	contentType: false, //must, tell jQuery not to process the data
-        	processData: false, //must, tell jQuery not to set contentType
-        	success: function(data) {
-        		console.log(data);
-        	},
-        	uploadProgress: function (event, position, total, percentComplete){	
-        		$("#progress-bar").width(percentComplete + '%');
-        		$("#progress-bar").html('<div id="progress-status">' + percentComplete +' %</div>')
-        	}
-        })
-		})
 	</script>
