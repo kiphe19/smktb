@@ -6,15 +6,32 @@
 		<link rel="stylesheet" type="text/css" href="./assets/css/metro.css">
 		<link rel="stylesheet" type="text/css" href="./assets/css/metro-responsive.css">
 		<script type="text/javascript" src="./assets/js/jquery-2.1.3.min.js"></script>
+
+		<style type="text/css" media="screen">
+			video{
+				min-width: 100%;
+				min-height: 100%;
+				object-fit: cover; 
+			}
+			#slideshow {  
+			    position: relative; 
+			    max-width: 100%; 
+			    max-height: 47.5vh;  
+			}
+			#slideshow > div { 
+			    position: relative; 
+			}
+		</style>
 	</head>
 	<body>
 		<div class="flex-grid">
 			<div class="row" style="height: 47.5vh">
 				<div class="cell colspan6 bg-blue">
-					<video autobuffer autoloop loop autoplay class="no-margin" width="100%" height="315px">
+					<!-- <video autobuffer autoloop loop autoplay>
 						<source src="../media/video/asds.mp4">
 						<source src="../media/video/asd.m4v">
-					</video>
+					</video> -->
+					Box 1
 				</div>
 				<div class="cell colspan6 bg-lighterBlue">
 					Box 2
@@ -22,7 +39,17 @@
 			</div>
 			<div class="row" style="height: 47.5vh">
 				<div class="cell colspan6 bg-green">
-					Box 3
+					<div id="slideshow">
+						<div>
+					    	<img src="../media/image/1.jpg">
+						</div>   
+						<div>
+					    	<img src="../media/image/2.jpg">
+						</div>
+						<div>
+					     	<img src="../media/image/3.jpg">
+						</div>
+					</div>
 				</div>
 				<div class="cell colspan6 bg-lightGreen">
 					Box 4
@@ -63,5 +90,9 @@
 		}
 		setInterval(time, 500);
 	});
+
+	//Slideshow
+	$("#slideshow > div:gt(0)").hide();
+	setInterval(function() { $('#slideshow > div:first') .fadeOut(1000) .next() .fadeIn(1000) .end() .appendTo('#slideshow'); }, 10000);
 </script>
 </html>
