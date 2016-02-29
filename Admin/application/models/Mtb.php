@@ -69,6 +69,39 @@ class Mtb extends CI_Model {
 		$delete = $this->db->delete('content');
 		echo ($delete == 1) ? "Content Berhasil di Hapus" : "Content Gagal di Hapus";
 	}
+	public function upload_video($id_box = NULL)
+	{
+		$config['upload_path']          = FCPATH . './uploads/';
+        $config['allowed_types']        = 'mp4|mkv';
+        $config['max_size']             = 1000000;
+        $this->load->library('upload', $config);
+
+        if (!$this->upload->do_upload('files')) {
+        	$response = array(
+        		"success"		=> false,
+        		"error"			=> $this->upload->display_errors()
+        		);
+        }else{
+        	$file = $this->upload->data()['file_name'];
+        	$data['id_box']		= $id_box;
+        	$data['content']	= $file;
+        	$data['type'] 		= '1';
+        	$insert = $this->db->insert('content', $data);
+        	if ($insert == 1) {
+	        	$response = array(
+	        		"success"		=> true,
+	        		"msg"			=> ""
+	        		);
+        	} else {
+				$response = array(
+	        		"success"		=> false,
+	        		"msg"			=> ""
+        		); 
+			}
+        }
+        header('Content-type: text/json');
+        echo json_encode($response);
+	}
 }
 
 /* End of file Mtb.php */

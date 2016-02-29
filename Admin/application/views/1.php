@@ -27,6 +27,10 @@
 						</a>
 					</div>
 				</div>
+				<?php  
+					$string = "box1-1.mp4";
+					echo substr($string, 0, 5);
+				?>
 				<div class="ibox-content">
 					<div class="table-responsive">
 						<table class="table table-bordered">
@@ -39,8 +43,9 @@
 							</thead>
 							<tbody>
 								<?php foreach ($content as $key): ?>
+									<?php $par = (strlen($key->content) > 20) ? "..." : ""; ?>
 									<tr>
-										<td><a href=""><?php echo $key->content ?></a></td>
+										<td><a href=""><?php echo substr($key->content, 0, 20) . $par; ?></a></td>
 										<td>
 											<button type="button" class="btn btn-flat btn-outline btn-success"><i class="fa fa-arrow-up"></i></button>
 											<button type="button" class="btn btn-flat btn-outline btn-success"><i class="fa fa-arrow-down"></i></button>
@@ -62,7 +67,7 @@
 	<script type="text/javascript" src="<?php echo base_url('assets/js/dropzone.js') ?>"></script>
 	<script type="text/javascript">
 		Dropzone.options.myAwesomeDropzone = {
-			url: '<?php echo base_url('ctb/upload'); ?>',
+			url: '<?php echo base_url('ctb/upload/'.$this->uri->segment(3)); ?>',
 			paramName: 'files',
 			maxFilesize: 1000,
 			parallelUploads: 5,

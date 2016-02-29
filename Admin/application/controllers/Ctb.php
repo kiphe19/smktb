@@ -2,6 +2,11 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Ctb extends CI_Controller {
+	public function __construct()
+	{
+		parent::__construct();
+		$this->load->helper('text');
+	}
 
 	public function index()
 	{
@@ -67,26 +72,9 @@ class Ctb extends CI_Controller {
 	{
 		($this->input->method() == "post") ? $this->Mtb->saveNews() : redirect('ctb','refresh') ;
 	}
-	public function upload()
+	public function upload($id_box = NULL)
 	{
-		$config['upload_path']          = FCPATH . './uploads/';
-        $config['allowed_types']        = 'mp4|mkv';
-        $config['max_size']             = 1000000;
-        $this->load->library('upload', $config);
-
-        if (!$this->upload->do_upload('files')) {
-        	$response = array(
-        		"success"		=> false,
-        		"error"			=> $this->upload->display_errors()
-        		);
-        }else{
-        	$response = array(
-        		"success"		=> true,
-        		"msg"			=> ""
-        		);
-        }
-        header('Content-type: text/json');
-        echo json_encode($response);
+		($this->input->method() == "post") ? $this->Mtb->upload_video($id_box) : redirect('ctb','refresh') ;
 	}
 }
 
