@@ -40,12 +40,20 @@ class Ctb extends CI_Controller {
 		$this->db->set('type', $type);
 		$this->db->where('id_box', $id);
 		$update = $this->db->update('main');
-		if ($update == 1) {
-			echo "Box " . $id . " Berhasil Diperbarui";
+		if ($update) {
+			$response = array(
+				"success" 	=> true,
+				"msg" 		=> "Box " .$id. " Berhasil Diperbarui"
+				);
 		}
 		else{
-			echo "Box " . $id . " Gagal Diperbarui";
+			$response = array(
+				"success" 	=> true,
+				"msg" 		=> "Box " .$id. " Gagal Diperbarui"
+				);
 		}
+		header('Content-type: text/json');
+		echo json_encode($response);
 	}
 	public function addText()
 	{
@@ -58,6 +66,27 @@ class Ctb extends CI_Controller {
 	public function editNews()
 	{
 		($this->input->method() == "post") ? $this->Mtb->saveNews() : redirect('ctb','refresh') ;
+	}
+	public function upload()
+	{
+		$config['upload_path']          = FCPATH . './uploads/';
+        $config['allowed_types']        = 'mp4|mkv';
+        $config['max_size']             = 1000000;
+        $this->load->library('upload', $config);
+
+        if (!$this->upload->do_upload('files')) {
+        	$response = array(
+        		"success"		=> false,
+        		"error"			=> $this->upload->display_errors()
+        		);
+        }else{
+        	$response = array(
+        		"success"		=> true,
+        		"msg"			=> ""
+        		);
+        }
+        header('Content-type: text/json');
+        echo json_encode($response);
 	}
 }
 
