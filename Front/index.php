@@ -6,6 +6,7 @@
 		<link rel="stylesheet" type="text/css" href="./assets/css/metro.css">
 		<link rel="stylesheet" type="text/css" href="./assets/css/metro-responsive.css">
 		<script type="text/javascript" src="./assets/js/jquery-2.1.3.min.js"></script>
+		<script type="text/javascript" src="./assets/js/metro.js"></script>
 
 		<style type="text/css" media="screen">
 			video{
@@ -38,14 +39,17 @@
 			</div>
 			<div class="row" style="height: 47.5vh">
 				<div class="cell colspan6 bg-green">
-					<div class="carousel" data-role="carousel">
-					    <div class="slide">
-				    		<img src="../media/image/1.jpg">
-					    </div>
-					    <div class="slide">
-				    		<img src="../media/image/2.jpg">
-					    </div>
-					</div>
+					<div class="carousel" id="carousel">
+						<div class="slide">
+					    	<img src="../media/image/1.jpg">
+						</div>   
+						<div class="slide">
+					    	<img src="../media/image/2.jpg">
+						</div>
+						<div class="slide">
+					     	<img src="../media/image/3.jpg">
+						</div>
+                    </div>
 				</div>
 				<div class="cell colspan6 bg-lightGreen">
 					Box 4
@@ -88,17 +92,16 @@
 	});
 
 	// Carousel
-    $('.carousel').carousel();
-    --------------------------
-    $('.carousel').carousel({
-        auto: true,
-        period: 3000,
-        duration: 2000,
-        direction: left,
-        markers: {
-            type: "square"
-        }
-    });
+	$(function(){
+        $('#carousel').carousel({
+		    auto: true,
+		    period: 5000,
+		    duration: 1000//,
+		    // markers: {
+		    // 	show: false
+		    // }
+		});
+    })(jQuery);
 
 </script>
 </html>
