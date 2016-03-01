@@ -67,7 +67,7 @@ class Mtb extends CI_Model {
 		$this->db->where('id_box', $id_box);
 		$this->db->where('id_content', $id_content);
 		$delete = $this->db->delete('content');
-		echo ($delete == 1) ? "Content Berhasil di Hapus" : "Content Gagal di Hapus";
+		echo ($delete) ? "Content Berhasil di Hapus" : "Content Gagal di Hapus";
 	}
 	public function deleteContentVideo($id_box)
 	{
@@ -77,7 +77,7 @@ class Mtb extends CI_Model {
 		$this->db->where('id_content', $id_content);
 		$delete = $this->db->delete('content');
 		$resp = array();
-		if ($delete == 1) {
+		if ($delete) {
 			if (is_file("uploads/" . $file_name)) {
 				if (unlink('uploads/'.$file_name)) {
 					$resp['success'] 	= true;
@@ -144,7 +144,7 @@ class Mtb extends CI_Model {
         	$data['content']	= $file;
         	$data['type'] 		= '1';
         	$insert = $this->db->insert('content', $data);
-        	if ($insert == 1) {
+        	if ($insert) {
 	        	$response = array(
 	        		"success"		=> true,
 	        		"msg"			=> ""
@@ -180,7 +180,7 @@ class Mtb extends CI_Model {
 				'type' 		=> '2'
 			);
 			$insert = $this->db->insert('content', $data);
-			if ($insert == 1) {
+			if ($insert) {
 				$response = array( 
 					'success'	=> true,
 					'msg' 		=> "Gambar Berhasil di upload"
