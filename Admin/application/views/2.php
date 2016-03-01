@@ -41,7 +41,7 @@
 						<tbody>
 							<?php foreach ($content as $key): ?>
 							<?php $par = (strlen($key->content) > 20) ? "..." : ""; ?>
-							<tr class="vid-cont">
+							<tr class="pict-cont">
 								<td><a href="" title="<?php echo $key->content ?>"><?php echo substr($key->content, 0, 20) . $par ?></a></td>
 								<td>
 									<button type="button" class="btn btn-flat btn-outline btn-success"><i class="fa fa-arrow-up"></i></button>
@@ -61,11 +61,37 @@
 	</div>
 </div>
 <script type="text/javascript" src="<?php echo base_url('assets/js/dropzone.js') ?>"></script>
+<script type="text/javascript" src="<?php echo base_url('assets/js/plugins/toastr/toastr.min.js') ?>"></script>
 <script type="text/javascript">
 	$(document).ready(function() {
-		var count = $('.vid-cont').length;
-		if (count == 0) {
-			$('tbody').append('<tr><td colspan="3" align="center"><b>Tidak ada Video yang tersedia</b></td></tr>')
+		count()
+		function count(){
+			var count = $('.pict-cont').length;
+			if (count == 0) {
+				$('tbody').append('<tr><td colspan="3" align="center"><b>Tidak ada Gambar yang tersedia</b></td></tr>')
+			}
+		}
+		function alert(status, msg){
+			toastr.options = {
+	          "closeButton": true,
+	          "debug": false,
+	          "progressBar": true,
+	          "positionClass": "toast-top-right",
+	          "onclick": null,
+	          "showDuration": "300",
+	          "hideDuration": "1000",
+	          "timeOut": "7000",
+	          "extendedTimeOut": "1000",
+	          "showEasing": "swing",
+	          "hideEasing": "linear",
+	          "showMethod": "fadeIn",
+	          "hideMethod": "fadeOut"
+		    }
+	    	if (status) {
+	        	toastr.success(msg, 'Success');
+	    	}else{
+	        	toastr.error(msg, 'Error');
+	    	}
 		}
 		Dropzone.options.myAwesomeDropzone = {
 			url: '<?php echo base_url('ctb/box/'.$this->uri->segment(3).'/picture/upload'); ?>',
@@ -81,6 +107,11 @@
 					e.preventDefault();
 					e.stopPropagation();
 					a.processQueue();
+				});
+				this.on('success', function(a, resp){
+					var a = JSON.parse(resp);
+					$('tbody').append(a.data)
+					alert(a.success, a.msg)					
 				});
 			}
 		};
@@ -99,6 +130,8 @@
 				success: function(resp){
 					if (resp.success == true) {
 						me.closest('tr').remove();
+						count();
+						alert(resp.success, resp.msg)
 					}
 				}
 			})
