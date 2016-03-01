@@ -10,16 +10,15 @@
 		<style type="text/css" media="screen">
 			video{
 				min-width: 100%;
-				min-height: 100%;
-				object-fit: cover; 
+				height: auto;
+				max-height: 47.5vh;
+				object-fit: fill; 
 			}
-			#slideshow {  
-			    position: relative; 
-			    max-width: 100%; 
-			    max-height: 47.5vh;  
-			}
-			#slideshow > div { 
-			    position: relative; 
+			img{
+				min-width: 100%;
+				height: auto;
+				max-height: 47.5vh;
+				object-fit: fill; 	
 			}
 		</style>
 	</head>
@@ -27,10 +26,10 @@
 		<div class="flex-grid">
 			<div class="row" style="height: 47.5vh">
 				<div class="cell colspan6 bg-blue">
-					<!-- <video autobuffer autoloop loop autoplay>
+					<video autobuffer autoloop loop autoplay>
 						<source src="../media/video/asds.mp4">
 						<source src="../media/video/asd.m4v">
-					</video> -->
+					</video>
 					Box 1
 				</div>
 				<div class="cell colspan6 bg-lighterBlue">
@@ -39,16 +38,13 @@
 			</div>
 			<div class="row" style="height: 47.5vh">
 				<div class="cell colspan6 bg-green">
-					<div id="slideshow">
-						<div>
-					    	<img src="../media/image/1.jpg">
-						</div>   
-						<div>
-					    	<img src="../media/image/2.jpg">
-						</div>
-						<div>
-					     	<img src="../media/image/3.jpg">
-						</div>
+					<div class="carousel" data-role="carousel">
+					    <div class="slide">
+				    		<img src="../media/image/1.jpg">
+					    </div>
+					    <div class="slide">
+				    		<img src="../media/image/2.jpg">
+					    </div>
 					</div>
 				</div>
 				<div class="cell colspan6 bg-lightGreen">
@@ -91,8 +87,18 @@
 		setInterval(time, 500);
 	});
 
-	//Slideshow
-	$("#slideshow > div:gt(0)").hide();
-	setInterval(function() { $('#slideshow > div:first') .fadeOut(1000) .next() .fadeIn(1000) .end() .appendTo('#slideshow'); }, 10000);
+	// Carousel
+    $('.carousel').carousel();
+    --------------------------
+    $('.carousel').carousel({
+        auto: true,
+        period: 3000,
+        duration: 2000,
+        direction: left,
+        markers: {
+            type: "square"
+        }
+    });
+
 </script>
 </html>
