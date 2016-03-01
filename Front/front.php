@@ -12,9 +12,9 @@
 			}
 			video{
 				width: 100% !important;
-				height: 100% !important;
+				height: auto !important;
 				max-height: 46vh;
-				object-fit: cover; 
+				object-fit: fill; 
 				display: inherit;
 			}
 		</style>
