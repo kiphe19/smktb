@@ -108,7 +108,4 @@ $(document).ready(function() {
 		})
 		return false;
 	});
-	function up(id = null){
-		console.log(id);
-	}
 </script>
