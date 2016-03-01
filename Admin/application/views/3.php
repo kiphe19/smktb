@@ -67,6 +67,7 @@
 		</div>
 	</div>
 </div>
+<script src="<?php echo base_url('assets') ?>/js/plugins/summernote/summernote.min.js"></script>
 <script type="text/javascript">
 $(document).ready(function() {
 	$('.summernote').summernote();
