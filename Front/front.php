@@ -11,8 +11,8 @@
 				padding-left: 0;
 			}
 			video{
-				width: 100%;
-				height: 100%;
+				width: 100% !important;
+				height: 100% !important;
 				max-height: 46vh;
 				object-fit: cover; 
 				display: inherit;
