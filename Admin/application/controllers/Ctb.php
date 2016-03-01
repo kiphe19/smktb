@@ -31,6 +31,7 @@ class Ctb extends CI_Controller {
 		$this->db->join('main m', 'c.id_box = m.id_box');
 		$this->db->where('m.id_box', $id);
 		$this->db->where('c.type', $main['type']);
+		$this->db->order_by('content', 'ASC');
 		$content = $this->db->get()->result();
 
 		$data['title'] = "Box " . $id;
@@ -66,15 +67,27 @@ class Ctb extends CI_Controller {
 	}
 	public function deleteContentText()
 	{
-		($this->uri->segment(4)) ? $this->Mtb->deleteContentText($this->uri->segment(3)) : redirect('ctb','refresh') ;
+		($this->input->method() == "post") ? $this->Mtb->deleteContentText($this->uri->segment(3)) : redirect('ctb','refresh') ;
+	}
+	public function deleteContentVideo()
+	{
+		($this->input->method() == "post") ? $this->Mtb->deleteContentVideo($this->uri->segment(3)) : redirect('ctb','refresh') ;
+	}
+	public function deleteContentPicture()
+	{
+		($this->input->method() == "post") ? $this->Mtb->deleteContentPicture($this->uri->segment(3)) : redirect('ctb','refresh') ;
 	}
 	public function editNews()
 	{
 		($this->input->method() == "post") ? $this->Mtb->saveNews() : redirect('ctb','refresh') ;
 	}
-	public function upload($id_box = NULL)
+	public function uploadVid($id_box = NULL)
 	{
 		($this->input->method() == "post") ? $this->Mtb->upload_video($id_box) : redirect('ctb','refresh') ;
+	}
+	public function uploadPict($id_box = NULL)
+	{
+		($this->input->method() == "post") ? $this->Mtb->upload_picture($id_box) : redirect('ctb','refresh') ;
 	}
 }
 

@@ -56,7 +56,7 @@
 								</td>
 								<td>
 									<a href="<?php echo base_url('ctb/box/'.$this->uri->segment(3)) ?>" class="btn btn-outline btn-primary">Edit</a>
-									<a href="<?php echo base_url('ctb/box/'.$this->uri->segment(3).'/delete-content') ?>" data-id="<?php echo $key->id_content ?>" class="btn btn-outline btn-danger" delete>Delete</a>
+									<a href="<?php echo base_url('ctb/box/'.$this->uri->segment(3).'/text/delete-content/') ?>" data-id="<?php echo $key->id_content ?>" class="btn btn-outline btn-danger" delete>Delete</a>
 								</td>
 							</tr>
 							<?php endforeach ?>

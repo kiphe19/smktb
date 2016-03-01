@@ -69,6 +69,63 @@ class Mtb extends CI_Model {
 		$delete = $this->db->delete('content');
 		echo ($delete == 1) ? "Content Berhasil di Hapus" : "Content Gagal di Hapus";
 	}
+	public function deleteContentVideo($id_box)
+	{
+		$id_content = $this->input->post('id_content');
+		$file_name = $this->input->post('name');
+		$this->db->where('id_box', $id_box);
+		$this->db->where('id_content', $id_content);
+		$delete = $this->db->delete('content');
+		$resp = array();
+		if ($delete == 1) {
+			if (is_file("uploads/" . $file_name)) {
+				if (unlink('uploads/'.$file_name)) {
+					$resp['success'] 	= true;
+					$resp['msg'] 		= "Video Berhasil dihapus";
+				}
+				else {
+					$resp['success'] 	= true;
+					$resp['msg'] 		= "Video gagal dihapus dari Directory!";				
+				}
+			} else{
+				$resp['success'] 	= true;
+				$resp['msg'] 		= "Video yang dihapus tidak ada!";			
+			}
+		} else {
+			$resp['success'] 	= false;
+			$resp['msg'] 		= "Video Gagal dihapus";
+		}
+		header("Content-Type: text/json");
+		echo json_encode($resp);
+	}
+	public function deleteContentPicture($id_box)
+	{
+		$id_content = $this->input->post('id_content');
+		$file_name	= $this->input->post('name');
+		$this->db->where('id_box', $id_box);
+		$this->db->where('id_content', $id_content);
+		$delete = $this->db->delete('content');
+		$resp = array();
+		if ($delete == 1) {
+			if (is_file("uploads/" . $file_name)) {
+				if (unlink('uploads/'.$file_name)) {
+					$resp['success'] = true;
+					$resp['msg'] = "Gambar berhasil dihapus";
+				} else {
+					$resp['success'] = true;
+					$resp['msg'] = "Gambar Gagal dihapus dari Directory!";
+				}
+			} else {
+				$resp['success'] = true;
+				$resp['msg'] = "Gambar yang dihapus tidak ada!";
+			}
+		} else {
+			$resp['success'] = false;
+			$resp['msg'] = "Gambar Gagal dihapus";
+		}
+		header("Content-Type: text/json");
+		echo json_encode($resp);
+	}
 	public function upload_video($id_box = NULL)
 	{
 		$config['upload_path']          = FCPATH . './uploads/';
@@ -101,6 +158,42 @@ class Mtb extends CI_Model {
         }
         header('Content-type: text/json');
         echo json_encode($response);
+	}
+	public function upload_picture($id_box = NULL)
+	{
+		$config['upload_path'] = './uploads/';
+		$config['allowed_types'] = 'gif|jpg|png|jpeg';
+		$config['max_size']  = '1000000';
+		$this->load->library('upload', $config);
+		$response = array();
+		if ( ! $this->upload->do_upload('files')){
+			$response = array( 
+				'success'	=> false,
+				'error' 	=> $this->upload->display_errors()
+			);
+		}
+		else{
+			$file = $this->upload->data()['file_name'];
+			$data = array(
+				'id_box' 	=> $id_box,
+				'content' 	=> $file,
+				'type' 		=> '2'
+			);
+			$insert = $this->db->insert('content', $data);
+			if ($insert == 1) {
+				$response = array( 
+					'success'	=> true,
+					'msg' 		=> "Gambar Berhasil di upload"
+				);
+			}else {
+				$response = array( 
+					'success'	=> false,
+					'msg' 		=> "Gambar Gagal di upload"
+				);
+			}
+		}
+		header("Content-Type: text/json");
+		echo json_encode($response);
 	}
 }
 
