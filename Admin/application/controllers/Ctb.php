@@ -12,7 +12,7 @@ class Ctb extends CI_Controller {
 	{
 		$data['title'] = "Dashboard";
 		$data['box'] = $this->Mtb->selectBox();
-		$this->load->view('index', $data);		
+		$this->load->view('index', $data);
 	}
 	public function news()
 	{
@@ -31,7 +31,7 @@ class Ctb extends CI_Controller {
 		$this->db->join('main m', 'c.id_box = m.id_box');
 		$this->db->where('m.id_box', $id);
 		$this->db->where('c.type', $main['type']);
-		$this->db->order_by('content', 'ASC');
+		$this->db->order_by('position', 'ASC');
 		$content = $this->db->get()->result();
 
 		$data['title'] = "Box " . $id;

@@ -139,10 +139,16 @@ class Mtb extends CI_Model {
         		"error"			=> $this->upload->display_errors()
         		);
         }else{
+			$this->db->select('max(position) as pos');
+        	$this->db->where('id_box', $id_box, FALSE);
+			$last_pos = $this->db->get('content')->row_array()['pos'];
+
         	$file = $this->upload->data()['file_name'];
         	$data['id_box']		= $id_box;
         	$data['content']	= $file;
         	$data['type'] 		= '1';
+        	$data['position']	= ++$last_pos;
+
         	$insert = $this->db->insert('content', $data);
         	if ($insert) {
 	        	$response = array(

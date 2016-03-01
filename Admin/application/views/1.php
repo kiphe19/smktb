@@ -44,8 +44,8 @@
 							<tr class="vid-cont">
 								<td><a href="" title="<?php echo $key->content ?>"><?php echo substr($key->content, 0, 20) . $par; ?></a></td>
 								<td>
-									<button type="button" class="btn btn-flat btn-outline btn-success"><i class="fa fa-arrow-up"></i></button>
-									<button type="button" class="btn btn-flat btn-outline btn-success"><i class="fa fa-arrow-down"></i></button>
+									<button type="button" class="btn btn-flat btn-outline btn-success"><i class="fa fa-arrow-up" onclick="up(<?php echo $key->position;?>);"></i></button>
+									<button type="button" class="btn btn-flat btn-outline btn-success" onclick="down(<?php echo $key->position;?>)"><i class="fa fa-arrow-down"></i></button>
 								</td>
 								<td>
 									<a href="#" class="btn btn-flat btn-outline btn-primary"><i class="fa fa-eye"></i></a>
@@ -108,4 +108,7 @@ $(document).ready(function() {
 		})
 		return false;
 	});
+	function up(id = null){
+		console.log(id);
+	}
 </script>
