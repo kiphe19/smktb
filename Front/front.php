@@ -12,9 +12,15 @@
 				padding-left: 0;
 			}
 			video{
+<<<<<<< HEAD
 				width: 100%;
 				height: 100%;
 				/*max-height: 46vh;*/
+=======
+				width: 100% !important;
+				height: 100% !important;
+				max-height: 46vh;
+>>>>>>> dcb72a4061e2cf7bf40ae5be4816a30282cd0fb3
 				object-fit: cover; 
 				display: inherit;
 			}

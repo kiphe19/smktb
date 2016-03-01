@@ -10,12 +10,10 @@
 				</div>
 			</div>
 			<div class="ibox-content">
-				<form>
-					<div class="form-group">
-						<label>Image</label>
-						<input type="file" name="" value="">
-					</div>
-					<button type="submit" class="btn btn-flat btn-info"><i class="fa fa-send"></i> Publish</button>
+				<form id="my-awesome-dropzone" class="dropzone dz-clickable" action="#">
+					<div class="dropzone-previews"></div>
+					<button type="submit" class="btn btn-primary pull-right"><i class="fa fa-upload"></i> Upload</button>
+					<div class="dz-default dz-message"><span>Drop files here to upload</span></div>
 				</form>
 			</div>
 		</div>
@@ -32,7 +30,7 @@
 			</div>
 			<div class="ibox-content">
 				<div class="table-responsive">
-					<table class="table table-bordered">
+					<table class="table table-bordered" id="table">
 						<thead>
 							<tr>
 								<th>Image</th>
@@ -42,15 +40,16 @@
 						</thead>
 						<tbody>
 							<?php foreach ($content as $key): ?>
-							<tr>
-								<td><a href=""><?php echo $key->content ?></a></td>
+							<?php $par = (strlen($key->content) > 20) ? "..." : ""; ?>
+							<tr class="vid-cont">
+								<td><a href="" title="<?php echo $key->content ?>"><?php echo substr($key->content, 0, 20) . $par ?></a></td>
 								<td>
 									<button type="button" class="btn btn-flat btn-outline btn-success"><i class="fa fa-arrow-up"></i></button>
 									<button type="button" class="btn btn-flat btn-outline btn-success"><i class="fa fa-arrow-down"></i></button>
 								</td>
 								<td>
 									<a href="#" class="btn btn-flat btn-outline btn-primary"><i class="fa fa-eye"></i></a>
-									<a href="#" class="btn btn-outline btn-danger"><i class="fa fa-trash"></i> Delete</a>
+									<a href="<?php echo base_url('ctb/box/'.$this->uri->segment(3).'/picture/delete-content') ?>" class="btn btn-outline btn-danger" data-id="<?php echo $key->id_content ?>" data-name="<?php echo $key->content ?>" delete><i class="fa fa-trash"></i> Delete</a>
 								</td>
 							</tr>
 							<?php endforeach ?>
@@ -61,3 +60,49 @@
 		</div>
 	</div>
 </div>
+<script type="text/javascript" src="<?php echo base_url('assets/js/dropzone.js') ?>"></script>
+<script type="text/javascript">
+	$(document).ready(function() {
+		var count = $('.vid-cont').length;
+		if (count == 0) {
+			$('tbody').append('<tr><td colspan="3" align="center"><b>Tidak ada Video yang tersedia</b></td></tr>')
+		}
+		Dropzone.options.myAwesomeDropzone = {
+			url: '<?php echo base_url('ctb/box/'.$this->uri->segment(3).'/picture/upload'); ?>',
+			paramName: 'files',
+			maxFilesize: 1000,
+			parallelUploads: 5,
+			autoProcessQueue: false,
+			acceptedFiles: 'image/*',
+			
+			init: function(){
+				var a = this;
+				this.element.querySelector("button[type=submit]").addEventListener("click", function(e) {
+					e.preventDefault();
+					e.stopPropagation();
+					a.processQueue();
+				});
+			}
+		};
+		$('#table').on('click', 'a[delete]', function() {
+			var url = $(this).attr('href'),
+			id = $(this).attr('data-id'),
+			name = $(this).attr('data-name'),
+			me = $(this);
+			$.ajax({
+				url: url,
+				type: 'POST',
+				data: {
+					id_content: id,
+					name: name
+				},
+				success: function(resp){
+					if (resp.success == true) {
+						me.closest('tr').remove();
+					}
+				}
+			})
+			return false;
+		});
+	});
+</script>
