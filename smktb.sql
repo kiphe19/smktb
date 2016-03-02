@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Mar 01, 2016 at 06:36 AM
+-- Generation Time: Mar 02, 2016 at 06:36 AM
 -- Server version: 5.6.21
 -- PHP Version: 5.6.3
 
@@ -19,6 +19,67 @@ SET time_zone = "+00:00";
 --
 -- Database: `smktb`
 --
+CREATE DATABASE IF NOT EXISTS `smktb` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+USE `smktb`;
+
+DELIMITER $$
+--
+-- Procedures
+--
+CREATE DEFINER=`root`@`localhost` PROCEDURE `change_pos`(IN `id_content` INT(11), IN `pos` INT(11), IN `type` ENUM('up','down') CHARSET utf8, IN `id_box` INT(11), IN `content_type` INT(1))
+if type = 'up' then
+	set @pa = pos - 1;
+
+	update `content` set `position` = case
+	when
+    	`position` = @pa then pos
+	when
+		`id_content` = id_content then @pa
+	else `position` end
+	where `id_box` = id_box and `type` = content_type;
+    
+else
+	
+    set @pa = pos + 1;
+    update `content` set `position` = case
+	when
+    	`position` = @pa then pos
+	when
+		`id_content` = id_content then @pa
+	else `position` end
+	where `id_box` = id_box and `type` = content_type;
+    
+end if$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `chps`(IN `id_content` INT, IN `pos` INT, IN `type` ENUM('up','down'), IN `id_box` INT, IN `content_type` INT)
+BEGIN
+
+declare poss INT;
+
+if `type` = "up" then
+	set poss = pos - 1;
+
+else 
+	set poss = pos + 1;
+    
+end if;
+
+
+	UPDATE `content` 
+SET 
+    `position` = CASE
+        WHEN `position` = poss THEN pos
+        WHEN `id_content` = id_content THEN poss
+        ELSE `position`
+    END
+WHERE
+    `id_box` = id_box
+        AND `type` = content_type;
+
+
+END$$
+
+DELIMITER ;
 
 -- --------------------------------------------------------
 
@@ -35,31 +96,16 @@ CREATE TABLE IF NOT EXISTS `content` (
   `position` int(11) NOT NULL DEFAULT '1',
   `uploaded` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `status` enum('0','1') COLLATE utf8_unicode_ci NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Dumping data for table `content`
 --
 
 INSERT INTO `content` (`id_content`, `id_box`, `type`, `title`, `content`, `position`, `uploaded`, `status`) VALUES
-(2, 1, '2', '', 'box1-1.jpg', 0, '2016-02-23 15:24:22', '1'),
-(3, 1, '3', 'box1.1', 'blablabla doang box1', 0, '2016-02-23 15:23:17', '1'),
-(4, 2, '1', '', 'box2-1.mp4', 0, '2016-02-23 15:24:29', '1'),
-(5, 2, '2', '', 'box2-1.jpg', 0, '2016-02-23 15:24:38', '1'),
-(6, 2, '3', 'box2.1', 'blablabla box2', 0, '2016-02-23 15:23:28', '1'),
-(7, 3, '1', '', 'box3-1.mp4', 0, '2016-02-23 15:24:43', '1'),
-(8, 3, '2', '', 'box3-1.jpg', 0, '2016-02-23 15:24:49', '1'),
-(9, 3, '3', 'box3.1', 'blablabla doang box3', 0, '2016-02-23 15:23:34', '1'),
-(10, 4, '1', '', 'box4-1.mp4', 0, '2016-02-23 15:25:03', '1'),
-(12, 1, '2', '', 'box1-2.jpg', 0, '2016-02-23 15:25:12', '1'),
-(13, 1, '3', 'box1.2', 'blablabla doang box1', 0, '2016-02-23 15:23:42', '1'),
-(14, 2, '1', '', 'box2-2.mp4', 0, '2016-02-23 15:25:16', '1'),
-(15, 2, '2', '', 'box2-2.jpg', 0, '2016-02-23 15:25:19', '1'),
-(16, 2, '3', 'box2.2', 'blablabla box2', 0, '2016-02-23 15:23:51', '1'),
-(17, 3, '1', '', 'box3-2.mp4', 0, '2016-02-23 15:25:27', '1'),
-(18, 3, '2', '', 'box3-2.jpg', 0, '2016-02-23 15:25:32', '1'),
-(19, 3, '3', 'box3.2', 'blablabla doang box3', 0, '2016-02-23 15:23:59', '1'),
-(20, 4, '1', '', 'box4-2.mp4', 0, '2016-02-23 15:25:41', '1');
+(25, 1, '1', '', '11958858_947643425276827_1368693301_n.mp4', 1, '2016-03-02 05:32:37', '0'),
+(26, 1, '1', '', 'oploverz_-_731_mp4_360p.mp4', 2, '2016-03-02 05:32:37', '0'),
+(27, 1, '3', 'Testing', '<span style="font-weight: bold;">jdasdhsadhsahda</span><p><br></p>', 2, '2016-03-02 05:32:37', '1');
 
 -- --------------------------------------------------------
 
@@ -80,7 +126,7 @@ INSERT INTO `main` (`id_box`, `type`) VALUES
 (1, '1'),
 (2, '3'),
 (3, '3'),
-(4, '2');
+(4, '3');
 
 -- --------------------------------------------------------
 
@@ -123,7 +169,7 @@ ALTER TABLE `news`
 -- AUTO_INCREMENT for table `content`
 --
 ALTER TABLE `content`
-MODIFY `id_content` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=26;
+MODIFY `id_content` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=28;
 --
 -- AUTO_INCREMENT for table `news`
 --
