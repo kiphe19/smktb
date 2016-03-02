@@ -158,6 +158,7 @@ class Mtb extends CI_Model {
         }else{
 			$this->db->select('max(position) as pos');
         	$this->db->where('id_box', $id_box, FALSE);
+        	$this->db->where('type', '1', FALSE);
 			$last_pos = $this->db->get('content')->row_array()['pos'];
 
         	$file = $this->upload->data()['file_name'];
@@ -247,6 +248,26 @@ class Mtb extends CI_Model {
 		}
 		header("Content-Type: text/json");
 		echo json_encode($response);
+	}
+
+	public function change_position()
+	{
+		$id = $this->input->post('id', TRUE);
+		$type = $this->input->post('type', TRUE);
+		$position = $this->input->post('pos', TRUE);
+
+		if ($type == 'up') {
+			$data = array(
+				'id_content'		=> $id,
+				'position'	=> ++$position
+			);
+		}else{
+			$data = array(
+				'id_content'		=> $id,
+				'position'	=> --$position
+			);
+		}
+		$this->db->update('content', $data, 'id_content');
 	}
 }
 
