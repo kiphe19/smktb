@@ -68,7 +68,9 @@
 		function count(){
 			var count = $('.pict-cont').length;
 			if (count == 0) {
-				$('tbody').append('<tr><td colspan="3" align="center"><b>Tidak ada Gambar yang tersedia</b></td></tr>')
+				$('tbody').append('<tr class="null"><td colspan="3" align="center"><b>Tidak ada Gambar yang tersedia</b></td></tr>')
+			} else{
+				$('tr.null').remove();
 			}
 		}
 		function alert(status, msg){
@@ -111,7 +113,8 @@
 				this.on('success', function(a, resp){
 					var a = JSON.parse(resp);
 					$('tbody').append(a.data)
-					alert(a.success, a.msg)					
+					alert(a.success, a.msg)	
+					count()				
 				});
 			}
 		};

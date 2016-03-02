@@ -60,7 +60,7 @@
 							<span id="clock"></span>
 						</div>
 						<div class="cell colspan10 bg-teal text-shadow" style="padding: 10px 0 10px 0">
-							<marquee><?php echo $news['content'] ?></marquee>
+							<marquee><?php echo htmlentities($news['content']) ?></marquee>
 						</div>
 					</div>
 				</div>
