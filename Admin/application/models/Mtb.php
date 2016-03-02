@@ -251,7 +251,7 @@ class Mtb extends CI_Model {
 		$box_id = $this->input->post('boxId', TRUE);
 		$box_type = $this->input->post('boxType', TRUE);
 
-		$this->db->query("call chps($id, $position, '$type', $box_id, $box_type)");
+		$this->db->query("call chps($id, $position, '$type', $box_id, '$box_type')");
 	}
 	
 	public function edit_text($id_box)
