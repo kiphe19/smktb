@@ -6,20 +6,20 @@
 		<link rel="stylesheet" type="text/css" href="./assets/css/metro.css">
 		<link rel="stylesheet" type="text/css" href="./assets/css/metro-responsive.css">
 		<script type="text/javascript" src="./assets/js/jquery-2.1.3.min.js"></script>
+		<script type="text/javascript" src="./assets/js/metro.js"></script>
 
 		<style type="text/css" media="screen">
 			video{
 				min-width: 100%;
-				min-height: 100%;
-				object-fit: cover; 
+				height: auto;
+				max-height: 47.5vh;
+				object-fit: fill; 
 			}
-			#slideshow {  
-			    position: relative; 
-			    max-width: 100%; 
-			    max-height: 47.5vh;  
-			}
-			#slideshow > div { 
-			    position: relative; 
+			img{
+				min-width: 100%;
+				height: auto;
+				max-height: 47.5vh;
+				object-fit: fill; 	
 			}
 		</style>
 	</head>
@@ -27,10 +27,10 @@
 		<div class="flex-grid">
 			<div class="row" style="height: 47.5vh">
 				<div class="cell colspan6 bg-blue">
-					<!-- <video autobuffer autoloop loop autoplay>
+					<video autobuffer autoloop loop autoplay>
 						<source src="../media/video/asds.mp4">
 						<source src="../media/video/asd.m4v">
-					</video> -->
+					</video>
 					Box 1
 				</div>
 				<div class="cell colspan6 bg-lighterBlue">
@@ -39,20 +39,30 @@
 			</div>
 			<div class="row" style="height: 47.5vh">
 				<div class="cell colspan6 bg-green">
-					<div id="slideshow">
-						<div>
+					<div class="carousel" id="carousel-img">
+						<div class="slide">
 					    	<img src="../media/image/1.jpg">
 						</div>   
-						<div>
+						<div class="slide">
 					    	<img src="../media/image/2.jpg">
 						</div>
-						<div>
+						<div class="slide">
 					     	<img src="../media/image/3.jpg">
 						</div>
-					</div>
+                    </div>
 				</div>
 				<div class="cell colspan6 bg-lightGreen">
-					Box 4
+					<div class="carousel" id="carousel-text">
+						<div class="slide">
+							<?php echo "Text 1"; ?>
+						</div>   
+						<div class="slide">
+							<?php echo "Text 2"; ?>
+						</div>
+						<div class="slide">
+							<?php echo "Text 3"; ?>
+						</div>
+                    </div>
 				</div>
 			</div>
 			<div class="row" style="height: 5vh">
@@ -91,8 +101,33 @@
 		setInterval(time, 500);
 	});
 
-	//Slideshow
-	$("#slideshow > div:gt(0)").hide();
-	setInterval(function() { $('#slideshow > div:first') .fadeOut(1000) .next() .fadeIn(1000) .end() .appendTo('#slideshow'); }, 10000);
+	// Carousel
+	$(function(){
+        $('#carousel-img').carousel({
+		    auto: true,
+		    direction: 'left',
+		    controls: false,
+		    period: 5000,
+		    duration: 1000,
+		    markers: {
+		    	show: false,
+		    	type: 'square',
+		    	position: 'bottom-right'
+		    }
+		});
+        $('#carousel-text').carousel({
+		    auto: true,
+		    direction: 'top',
+		    controls: false,
+		    period: 5000,
+		    duration: 1000,
+		    markers: {
+		    	show: false,
+		    	type: 'square',
+		    	position: 'bottom-right'
+		    }
+		});
+    })(jQuery);
+
 </script>
 </html>
