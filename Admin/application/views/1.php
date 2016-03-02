@@ -44,8 +44,8 @@
 								<tr class="vid-cont">
 									<td><a href="" title="<?php echo $key->content ?>"><?php echo substr($key->content, 0, 20) . $par; ?></a></td>
 									<td>
-										<button type="button" class="btn btn-flat btn-outline btn-success" data-id="<?php echo $key->id_content?>" data-pos="<?php echo $key->position;?>" position-type="up"><i class="fa fa-arrow-up"></i></button>
-										<button type="button" class="btn btn-flat btn-outline btn-success" data-id="<?php echo $key->id_content?>" data-pos="<?php echo $key->position;?>" position-type="down"><i class="fa fa-arrow-down"></i></button>
+										<button type="button" class="btn btn-flat btn-outline btn-success" data-id="<?php echo $key->id_content?>" data-pos="<?php echo $key->position;?>" position-type="up" box-type="<?php echo $data['type'] ?>" box-id="<?php echo $key->id_box?>"><i class="fa fa-arrow-up"></i></button>
+										<button type="button" class="btn btn-flat btn-outline btn-success" data-id="<?php echo $key->id_content?>" data-pos="<?php echo $key->position;?>" position-type="down" box-type="<?php echo $data['type'] ?>" box-id="<?php echo $key->id_box?>"><i class="fa fa-arrow-down"></i></button>
 									</td>
 									<td>
 										<a href="#" class="btn btn-flat btn-outline btn-primary"><i class="fa fa-eye"></i></a>
@@ -140,11 +140,14 @@
 		$('button').click(function(e){
 			var attr = $(this).attr('data-pos'),
 				id = $(this).attr('data-id'),
-				type = $(this).attr('position-type');
+				type = $(this).attr('position-type'),
+				box_id = $(this).attr('box-id'),
+				box_type = $(this).attr('box-type');
+
 				if (type === 'up') {
-					var data = {id: id, type: 'up', pos: attr};
+					var data = {id: id, type: 'up', pos: attr, boxId: box_id, boxType: box_type};
 				}else{
-					var data = {id: id, type: 'down', pos: attr};
+					var data = {id: id, type: 'down', pos: attr, boxId: box_id, boxType: box_type};
 				}
 				$.ajax({
 					url: '<?php echo base_url('Ctb/chpos'); ?>',
