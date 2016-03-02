@@ -44,8 +44,8 @@
 								<tr class="vid-cont">
 									<td><a href="" title="<?php echo $key->content ?>"><?php echo substr($key->content, 0, 20) . $par; ?></a></td>
 									<td>
-										<button type="button" class="btn btn-flat btn-outline btn-success"><i class="fa fa-arrow-up" onclick="up(<?php echo $key->position;?>);"></i></button>
-										<button type="button" class="btn btn-flat btn-outline btn-success" onclick="down(<?php echo $key->position;?>)"><i class="fa fa-arrow-down"></i></button>
+										<button type="button" class="btn btn-flat btn-outline btn-success" data-id="<?php echo $key->id_content?>" data-pos="<?php echo $key->position;?>" position-type="up"><i class="fa fa-arrow-up"></i></button>
+										<button type="button" class="btn btn-flat btn-outline btn-success" data-id="<?php echo $key->id_content?>" data-pos="<?php echo $key->position;?>" position-type="down"><i class="fa fa-arrow-down"></i></button>
 									</td>
 									<td>
 										<a href="#" class="btn btn-flat btn-outline btn-primary"><i class="fa fa-eye"></i></a>
@@ -137,5 +137,23 @@
 			})
 			return false;
 		});
+		$('button').click(function(e){
+			var attr = $(this).attr('data-pos'),
+				id = $(this).attr('data-id'),
+				type = $(this).attr('position-type');
+				if (type === 'up') {
+					var data = {id: id, type: 'up', pos: attr};
+				}else{
+					var data = {id: id, type: 'down', pos: attr};
+				}
+				$.ajax({
+					url: '<?php echo base_url('Ctb/chpos'); ?>',
+					data: data,
+					type: 'post',
+					success: function(e){
+
+					}
+				})
+		})
 	});
 </script>
