@@ -89,6 +89,10 @@ class Ctb extends CI_Controller {
 	{
 		($this->input->method() == "post") ? $this->Mtb->upload_picture($id_box) : redirect('ctb','refresh') ;
 	}
+	public function chpos()
+	{
+		($this->input->is_ajax_request()) ? $this->Mtb->change_position() : redirect('ctb', 'refresh');
+	}
 }
 
 /* End of file Ctb.php */
