@@ -51,6 +51,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 */
 $route['default_controller'] 					= 'Ctb';
 $route['ctb/box/(:num)/addText'] 				= 'ctb/addText';
+$route['ctb/box/(:num)/edit-text'] 				= 'ctb/editText/$1';
 $route['ctb/box/(:num)/text/delete-content'] 	= 'ctb/deleteContentText';
 $route['ctb/box/(:num)/video/delete-content'] 	= 'ctb/deleteContentVideo';
 $route['ctb/box/(:num)/picture/delete-content'] = 'ctb/deleteContentPicture';

@@ -93,6 +93,10 @@ class Ctb extends CI_Controller {
 	{
 		($this->input->is_ajax_request()) ? $this->Mtb->change_position() : redirect('ctb', 'refresh');
 	}
+	public function editText($id_box = 1)
+	{
+		($this->input->method() == "post") ? $this->Mtb->edit_text($id_box) : redirect('ctb','refresh') ;
+	}
 }
 
 /* End of file Ctb.php */
