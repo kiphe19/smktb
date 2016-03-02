@@ -42,20 +42,22 @@
 						<thead>
 							<tr>
 								<th>Title</th>
+								<th class="hide"></th>
 								<th>Position</th>
 								<th>Action</th>
 							</tr>
 						</thead>
 						<tbody id="content">
 							<?php foreach ($content as $key): ?>
-							<tr class="text-cont">
-								<td><?php echo $key->title ?></td>
+							<tr class="text-cont" data-id="<?php echo $key->id_content ?>">
+								<td class="title"><?php echo $key->title ?></td>
+								<td class="hide content"><?php echo $key->content ?></td>
 								<td>
 									<button type="button" class="btn btn-flat btn-outline btn-success"><i class="fa fa-arrow-up"></i></button>
 									<button type="button" class="btn btn-flat btn-outline btn-success"><i class="fa fa-arrow-down"></i></button>
 								</td>
 								<td>
-									<a href="<?php echo base_url('ctb/box/'.$this->uri->segment(3)) ?>" class="btn btn-outline btn-primary">Edit</a>
+									<button class="btn btn-outline btn-primary" data-toggle="modal" data-target="#myModal5" edit>Edit</button>
 									<a href="<?php echo base_url('ctb/box/'.$this->uri->segment(3).'/text/delete-content/') ?>" data-id="<?php echo $key->id_content ?>" class="btn btn-outline btn-danger" delete>Delete</a>
 								</td>
 							</tr>
@@ -63,6 +65,30 @@
 						</tbody>
 					</table>
 				</div>
+				<div class="modal inmodal fade" id="myModal5" tabindex="-1" role="dialog"  aria-hidden="true">
+	                <div class="modal-dialog">
+	                    <div class="modal-content">
+	                        <div class="modal-header">
+	                            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+	                            <h4 class="modal-title">Modal title</h4>
+	                            <small class="font-bold">Lorem Ipsum is simply dummy text of the printing and typesetting industry.</small>
+	                        </div>
+                        	<form action="<?php echo base_url('ctb/box/'.$this->uri->segment(3).'/edit-text') ?>" id="edit">
+		                        <div class="modal-body">
+		                        	<div class="form-group">
+		                        		<label>Title</label>
+		                        		<input type="text" value="" placeholder="Masukan Title" id="editTitle" class="form-control">
+		                        	</div>
+		                            <textarea name="" class="summernote" id="editContent"></textarea>
+		                        </div>
+		                        <div class="modal-footer">
+		                            <button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
+		                            <button type="submit" class="btn btn-primary" data-id="" id="submit">Save changes</button>
+		                        </div>
+                        	</form>
+	                    </div>
+	                </div>
+	            </div>
 			</div>
 		</div>
 	</div>
@@ -72,6 +98,7 @@
 <script type="text/javascript">
 $(document).ready(function() {
 	$('.summernote').summernote();
+	count()
 	function count(){
 		var count = $('.text-cont').length;
 		if (count == 0) {
@@ -121,6 +148,9 @@ $(document).ready(function() {
 		 		alert(resp.success, resp.msg);
 		 		$('#content').append(resp.data);
 		 		count()
+				$('.note-editable').html("<p><br></p>")
+		 		$('#text').val('');
+		 		$('#title').val('');
 		 	}
 		 })
 		return false;
@@ -142,7 +172,39 @@ $(document).ready(function() {
 			}
 		})
 		return false;
-		/* Act on the event */
 	})
+	$('#table').on('click', 'button[edit]', function() {
+		var title = $(this).closest('tr').children('td.title').text(),
+		content = $(this).closest('tr').children('td.content').html(),
+		id = $(this).closest('tr').attr('data-id');
+		$('#submit').attr('data-id', id);
+		$('#editTitle').val(title);
+		$('#editContent').text(content);
+		$('#editContent').closest('div.modal-body').children('div.note-editor').children('div.note-editable').html(content);
+		console.log(content)
+	});
+	$('#edit').submit(function() {
+		var url = $(this).attr('action'), 
+		id = $('#submit').attr('data-id'),
+		title = $('#editTitle').val(),
+		content = $('#editContent').val();
+		$.ajax({
+			url: url,
+			type: 'POST',
+			data: {
+				id: id,
+				title: title,
+				content: content
+			},
+			success:function(resp){
+				if (resp.success) {
+					$('tr[data-id="'+resp.id+'"]').html(resp.updated);
+				}
+				count();
+				alert(resp.success, resp.msg)
+			}
+		})
+		return false;
+	});
 });
 </script>

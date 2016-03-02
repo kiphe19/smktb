@@ -36,15 +36,16 @@ class Mtb extends CI_Model {
 		if ($insert == 1) {
 			// foreach ($content as $key) {
 				$html = 
-				'<tr class="text-cont">' .
-					'<td>' . $data['title'] . '</td>' .
+				'<tr class="text-cont" data-id="'.$id.'">' .
+					'<td class="title">' . $data['title'] . '</td>' .
+					'<td class="hide content">' . $data['content'] . '</td>' . 
 					'<td>' .
 						'<button type="button" class="btn btn-flat btn-outline btn-success"><i class="fa fa-arrow-up"></i></button> ' .
 						'<button type="button" class="btn btn-flat btn-outline btn-success"><i class="fa fa-arrow-down"></i></button>' .
 					'</td>' .
 					'<td>' .
-						'<a href="' . base_url('ctb/box/'.$data['id_box'].'/'.$id.'/edit-text') . '" class="btn btn-outline btn-primary">Edit</a> ' .
-						'<a href="' . base_url('ctb/box/'.$data['id_box'].'/picture/delete-content') . '" data-id="'.$id.'" class="btn btn-outline btn-danger" delete>Delete</a> ' . 
+						'<button class="btn btn-outline btn-primary" data-toggle="modal" data-target="#myModal5" edit>Edit</button> ' .
+						'<a href="' . base_url('ctb/box/'.$data['id_box'].'/text/delete-content') . '" data-id="'.$id.'" class="btn btn-outline btn-danger" delete>Delete</a> ' . 
 					'</td>' .
 				'</tr>';
 			// }
@@ -59,12 +60,6 @@ class Mtb extends CI_Model {
 				'msg'		=> "Text Gagal ditambahkan"
 				);
 		}
-		// $this->db->select('id_content, title');
-		// $this->db->where('id_box', $data['id_box']);
-		// $this->db->where('type', $data['type']);
-		// $content = $this->db->get('content')->result();
-
-
 		header("Content-Type: text/json");
 		echo json_encode($resp);
 	}
@@ -84,7 +79,6 @@ class Mtb extends CI_Model {
 		}
 		header("Content-Type: text/json");
 		echo json_encode($resp);
-		// echo ($delete) ? "Content Berhasil di Hapus" : "Content Gagal di Hapus";
 	}
 	public function deleteContentVideo($id_box)
 	{
@@ -247,6 +241,47 @@ class Mtb extends CI_Model {
 		}
 		header("Content-Type: text/json");
 		echo json_encode($response);
+	}
+	public function edit_text($id_box)
+	{
+		$id = $this->input->post('id');
+		$title = $this->input->post('title');
+		$content = $this->input->post('content');
+
+		$this->db->set('title', $title);
+		$this->db->set('content', $content);
+		$this->db->where('id_box', $id_box);
+		$this->db->where('id_content', $id);
+		$update = $this->db->update('content');
+		$resp = array();
+		if ($update == 1) {
+			$html = 
+				// '<tr class="text-cont" data-id="'.$id.'">' .
+					'<td class="title">' . $title . '</td>' .
+					'<td class="hide content">' . $content . '</td>' . 
+					'<td>' .
+						'<button type="button" class="btn btn-flat btn-outline btn-success"><i class="fa fa-arrow-up"></i></button> ' .
+						'<button type="button" class="btn btn-flat btn-outline btn-success"><i class="fa fa-arrow-down"></i></button>' .
+					'</td>' .
+					'<td>' .
+						'<button class="btn btn-outline btn-primary" data-toggle="modal" data-target="#myModal5" edit>Edit</button> ' .
+						'<a href="' . base_url('ctb/box/'.$id_box.'/text/delete-content') . '" data-id="'.$id.'" class="btn btn-outline btn-danger" delete>Delete</a> ' . 
+					'</td>';
+				// '</tr>';
+			$resp = array(
+				'success' 	=> true,
+				'id'		=> $id,
+				'msg'		=> 'Text Berhasil Diperbarui',
+				'updated'	=> $html
+				);
+		} else {
+			$resp = array(
+				'success' 	=> false,
+				'msg'		=> 'Text Gagal Diperbarui',
+				);
+		}
+		header("Content-Type: text-json");
+		echo json_encode($resp);
 	}
 }
 
