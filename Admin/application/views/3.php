@@ -74,17 +74,21 @@
 	                            <small class="font-bold">Lorem Ipsum is simply dummy text of the printing and typesetting industry.</small>
 	                        </div>
                         	<form action="<?php echo base_url('ctb/box/'.$this->uri->segment(3).'/edit-text') ?>" id="edit">
+                        	<div class="table-responsive">
 		                        <div class="modal-body">
-		                        	<div class="form-group">
-		                        		<label>Title</label>
-		                        		<input type="text" value="" placeholder="Masukan Title" id="editTitle" class="form-control">
+			                        	<div class="form-group">
+			                        		<label>Title</label>
+			                        		<input type="text" value="" placeholder="Masukan Title" id="editTitle" class="form-control">
+			                        	</div>
+		                        	<div class="scroll-content">
+			                            <textarea name="" class="summernote" id="editContent"></textarea>
 		                        	</div>
-		                            <textarea name="" class="summernote" id="editContent"></textarea>
 		                        </div>
 		                        <div class="modal-footer">
 		                            <button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
 		                            <button type="submit" class="btn btn-primary" data-id="" id="submit">Save changes</button>
 		                        </div>
+                        	</div>
                         	</form>
 	                    </div>
 	                </div>
@@ -98,6 +102,7 @@
 <script type="text/javascript">
 $(document).ready(function() {
 	$('.summernote').summernote();
+	$('.scroll-content').slimScroll();
 	count()
 	function count(){
 		var count = $('.text-cont').length;
