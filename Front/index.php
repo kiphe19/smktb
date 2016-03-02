@@ -17,8 +17,8 @@
 			}
 			img{
 				min-width: 100%;
-				height: auto;
-				max-height: 47.5vh;
+				min-height: 100%;
+				max-height: 100%;
 				object-fit: fill; 	
 			}
 		</style>
@@ -105,6 +105,7 @@
 	$(function(){
         $('#carousel-img').carousel({
 		    auto: true,
+		    effect: 'slowdown',
 		    direction: 'left',
 		    controls: false,
 		    period: 5000,
@@ -117,7 +118,7 @@
 		});
         $('#carousel-text').carousel({
 		    auto: true,
-		    direction: 'top',
+		    direction: 'right',
 		    controls: false,
 		    period: 5000,
 		    duration: 1000,
