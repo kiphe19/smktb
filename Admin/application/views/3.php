@@ -48,7 +48,7 @@
 						</thead>
 						<tbody id="content">
 							<?php foreach ($content as $key): ?>
-							<tr>
+							<tr class="text-cont">
 								<td><?php echo $key->title ?></td>
 								<td>
 									<button type="button" class="btn btn-flat btn-outline btn-success"><i class="fa fa-arrow-up"></i></button>
@@ -67,9 +67,41 @@
 		</div>
 	</div>
 </div>
+<script src="<?php echo base_url('assets') ?>/js/plugins/summernote/summernote.min.js"></script>
+<script type="text/javascript" src="<?php echo base_url('assets/js/plugins/toastr/toastr.min.js') ?>"></script>
 <script type="text/javascript">
 $(document).ready(function() {
 	$('.summernote').summernote();
+	function count(){
+		var count = $('.text-cont').length;
+		if (count == 0) {
+			$('tbody').append('<tr class="null"><td colspan="3" align="center"><b>Tidak ada Text yang tersedia</b></td></tr>')
+		} else {
+			$('.null').remove();
+		}
+	}
+	function alert(status, msg){
+		toastr.options = {
+		  "closeButton": true,
+		  "debug": false,
+		  "progressBar": true,
+		  "positionClass": "toast-top-right",
+		  "onclick": null,
+		  "showDuration": "300",
+		  "hideDuration": "1000",
+		  "timeOut": "7000",
+		  "extendedTimeOut": "1000",
+		  "showEasing": "swing",
+		  "hideEasing": "linear",
+		  "showMethod": "fadeIn",
+		  "hideMethod": "fadeOut"
+		}
+		if (status) {
+			toastr.success(msg, 'Success');
+		}else{
+			toastr.error(msg, 'Error');
+		}
+	}
 	$('#form').submit(function() {
 		var url = $(this).attr('action'),
 		id 		= $(this).attr('data-box'),
@@ -85,8 +117,10 @@ $(document).ready(function() {
 		 		type: '3'
 		 	},
 		 	success: function(resp){
-		 		alert(resp.msg);
-		 		$('#content').html(resp.data);
+		 		// console.log(resp)
+		 		alert(resp.success, resp.msg);
+		 		$('#content').append(resp.data);
+		 		count()
 		 	}
 		 })
 		return false;
@@ -100,14 +134,15 @@ $(document).ready(function() {
 			type: 'POST',
 			data: {id: id},
 			success: function(resp){
-				alert(resp)
-				if (resp == "Content Berhasil di Hapus") {
+				if (resp.success) {
 					me.closest('tr').remove();
+					count();
 				}
+				alert(resp.success, resp.msg)
 			}
 		})
 		return false;
 		/* Act on the event */
-	});
+	})
 });
 </script>

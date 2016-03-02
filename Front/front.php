@@ -18,10 +18,14 @@
 				/*max-height: 46vh;*/
 =======
 				width: 100% !important;
-				height: 100% !important;
+				height: auto !important;
 				max-height: 46vh;
+<<<<<<< HEAD
 >>>>>>> dcb72a4061e2cf7bf40ae5be4816a30282cd0fb3
 				object-fit: cover; 
+=======
+				object-fit: fill; 
+>>>>>>> e1f5bead1ac3084e8a80b8f55e69ed14a0fd9dcc
 				display: inherit;
 			}
 			img{

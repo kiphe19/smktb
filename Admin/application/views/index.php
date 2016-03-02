@@ -95,7 +95,6 @@
     <script src="<?php echo base_url('assets') ?>/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
     <script src="<?php echo base_url('assets') ?>/js/inspinia.js"></script>
     <script src="<?php echo base_url('assets') ?>/js/plugins/pace/pace.min.js"></script>
-    <script src="<?php echo base_url('assets') ?>/js/plugins/summernote/summernote.min.js"></script>
 
 </body>
 </html>

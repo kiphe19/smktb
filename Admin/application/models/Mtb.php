@@ -25,38 +25,45 @@ class Mtb extends CI_Model {
 	{
 		$data['id_box'] = $this->input->post('id');
 		$data['type'] = $this->input->post('type');
-		if ($this->input->post('title')) {
-			$data['title'] = $this->input->post('title');
-		}
+		// if ($this->input->post('title')) {
+		$data['title'] = $this->input->post('title');
+		// }
 		$data['content'] = $this->input->post('content');
 		$data['status'] = '1';
 		$insert = $this->db->insert('content', $data);
-		$msg = ($insert == 1) ? "Content Berhasil ditambahkan" : "Content Gagal ditambahkan";
-		
-		$this->db->select('id_content, title');
-		$this->db->where('id_box', $data['id_box']);
-		$this->db->where('type', $data['type']);
-		$content = $this->db->get('content')->result();
-
-		$html = "";
-		foreach ($content as $key) {
-			$html .= 
-			'<tr>' .
-				'<td>' . $key->title . '</td>' .
-				'<td>' .
-					'<button type="button" class="btn btn-flat btn-outline btn-success"><i class="fa fa-arrow-up"></i></button> ' .
-					'<button type="button" class="btn btn-flat btn-outline btn-success"><i class="fa fa-arrow-down"></i></button>' .
-				'</td>' .
-				'<td>' .
-					'<a href="<?php echo base_url(\'ctb/box1\') ?>" class="btn btn-outline btn-primary">Edit</a> ' .
-					'<a href="' . base_url('ctb/box/'.$data['id_box'].'/delete-content') . '" data-id="'.$key->id_content.'" class="btn btn-outline btn-danger" delete>Delete</a> ' . 
-				'</td>' .
-			'</tr>';
+		$id = $this->db->insert_id();
+		$msg = ($insert == 1) ? "Text Berhasil ditambahkan" : "Text Gagal ditambahkan";
+		if ($insert == 1) {
+			// foreach ($content as $key) {
+				$html = 
+				'<tr class="text-cont">' .
+					'<td>' . $data['title'] . '</td>' .
+					'<td>' .
+						'<button type="button" class="btn btn-flat btn-outline btn-success"><i class="fa fa-arrow-up"></i></button> ' .
+						'<button type="button" class="btn btn-flat btn-outline btn-success"><i class="fa fa-arrow-down"></i></button>' .
+					'</td>' .
+					'<td>' .
+						'<a href="' . base_url('ctb/box/'.$data['id_box'].'/'.$id.'/edit-text') . '" class="btn btn-outline btn-primary">Edit</a> ' .
+						'<a href="' . base_url('ctb/box/'.$data['id_box'].'/picture/delete-content') . '" data-id="'.$id.'" class="btn btn-outline btn-danger" delete>Delete</a> ' . 
+					'</td>' .
+				'</tr>';
+			// }
+			$resp = array(
+				'success'	=> true,
+				'msg' 		=> "Text Berhasil ditambahkan",
+				'data' 		=> $html
+				);
+		} else {
+			$resp = array(
+				'success'	=> false,
+				'msg'		=> "Text Gagal ditambahkan"
+				);
 		}
-		$resp = array(
-			'msg' => $msg,
-			'data' => $html
-			);
+		// $this->db->select('id_content, title');
+		// $this->db->where('id_box', $data['id_box']);
+		// $this->db->where('type', $data['type']);
+		// $content = $this->db->get('content')->result();
+
 
 		header("Content-Type: text/json");
 		echo json_encode($resp);
@@ -67,7 +74,17 @@ class Mtb extends CI_Model {
 		$this->db->where('id_box', $id_box);
 		$this->db->where('id_content', $id_content);
 		$delete = $this->db->delete('content');
-		echo ($delete) ? "Content Berhasil di Hapus" : "Content Gagal di Hapus";
+		$resp = array();
+		if ($delete == 1) {
+			$resp['success'] = true;
+			$resp['msg'] = "Text Berhasil Di Hapus";
+		} else {
+			$resp['success'] = false;
+			$resp['msg'] = "Text Gagal Di Hapus";
+		}
+		header("Content-Type: text/json");
+		echo json_encode($resp);
+		// echo ($delete) ? "Content Berhasil di Hapus" : "Content Gagal di Hapus";
 	}
 	public function deleteContentVideo($id_box)
 	{
@@ -150,19 +167,34 @@ class Mtb extends CI_Model {
         	$data['position']	= ++$last_pos;
 
         	$insert = $this->db->insert('content', $data);
+        	$id = $this->db->insert_id();
         	if ($insert) {
+				$par = (strlen($file) > 20) ? "..." : "";
+        		$html = 
+					'<tr class="vid-cont">' .
+						'<td><a href="" title="'.$file.'">' . substr($file, 0, 20) . $par . '</td>' .
+						'<td>' .
+							'<button type="button" class="btn btn-flat btn-outline btn-success"><i class="fa fa-arrow-up"></i></button> ' .
+							'<button type="button" class="btn btn-flat btn-outline btn-success"><i class="fa fa-arrow-down"></i></button>' .
+						'</td>' .
+						'<td>' .
+							'<a href="#" class="btn btn-flat btn-outline btn-primary"><i class="fa fa-eye"></i></a> ' .
+							'<a href="' . base_url('ctb/box/'.$id_box.'/video/delete-content') . '" data-id="'.$id.'" class="btn btn-outline btn-danger" data-id="'.$id.'" data-name="'.$file.'" delete><i class="fa fa-trash"></i> Delete</a> ' . 
+						'</td>' .
+					'</tr>';
 	        	$response = array(
 	        		"success"		=> true,
-	        		"msg"			=> ""
+	        		"msg"			=> "Video ".$file." Berhasil Di Upload",
+	        		"data"			=> $html
 	        		);
         	} else {
 				$response = array(
 	        		"success"		=> false,
-	        		"msg"			=> ""
+	        		"msg"			=> "Video ".$file." Gagal Di Upload"
         		); 
 			}
         }
-        header('Content-type: text/json');
+        header('Content-Type: text/json');
         echo json_encode($response);
 	}
 	public function upload_picture($id_box = NULL)
@@ -186,15 +218,30 @@ class Mtb extends CI_Model {
 				'type' 		=> '2'
 			);
 			$insert = $this->db->insert('content', $data);
+			$id = $this->db->insert_id();
 			if ($insert) {
+				$par = (strlen($file) > 20) ? "..." : "";
+				$html = 
+					'<tr class="pict-cont">' .
+						'<td><a href="" title="'.$file.'">' . substr($file, 0, 20) . $par . '</td>' .
+						'<td>' .
+							'<button type="button" class="btn btn-flat btn-outline btn-success"><i class="fa fa-arrow-up"></i></button> ' .
+							'<button type="button" class="btn btn-flat btn-outline btn-success"><i class="fa fa-arrow-down"></i></button>' .
+						'</td>' .
+						'<td>' .
+							'<a href="#" class="btn btn-flat btn-outline btn-primary"><i class="fa fa-eye"></i></a> ' .
+							'<a href="' . base_url('ctb/box/'.$id_box.'/video/delete-content') . '" data-id="'.$id.'" class="btn btn-outline btn-danger" data-id="'.$id.'" data-name="'.$file.'" delete><i class="fa fa-trash"></i> Delete</a> ' . 
+						'</td>' .
+					'</tr>';
 				$response = array( 
 					'success'	=> true,
-					'msg' 		=> "Gambar Berhasil di upload"
+					'msg' 		=> "Gambar ".$file." Berhasil di upload",
+					'data'		=> $html
 				);
 			}else {
 				$response = array( 
 					'success'	=> false,
-					'msg' 		=> "Gambar Gagal di upload"
+					'msg' 		=> "Gambar ".$file." Gagal di upload"
 				);
 			}
 		}

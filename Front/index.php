@@ -39,7 +39,7 @@
 			</div>
 			<div class="row" style="height: 47.5vh">
 				<div class="cell colspan6 bg-green">
-					<div class="carousel" id="carousel">
+					<div class="carousel" id="carousel-img">
 						<div class="slide">
 					    	<img src="../media/image/1.jpg">
 						</div>   
@@ -52,7 +52,17 @@
                     </div>
 				</div>
 				<div class="cell colspan6 bg-lightGreen">
-					Box 4
+					<div class="carousel" id="carousel-text">
+						<div class="slide">
+							<?php echo "Text 1"; ?>
+						</div>   
+						<div class="slide">
+							<?php echo "Text 2"; ?>
+						</div>
+						<div class="slide">
+							<?php echo "Text 3"; ?>
+						</div>
+                    </div>
 				</div>
 			</div>
 			<div class="row" style="height: 5vh">
@@ -93,13 +103,29 @@
 
 	// Carousel
 	$(function(){
-        $('#carousel').carousel({
+        $('#carousel-img').carousel({
 		    auto: true,
+		    direction: 'left',
+		    controls: false,
 		    period: 5000,
-		    duration: 1000//,
-		    // markers: {
-		    // 	show: false
-		    // }
+		    duration: 1000,
+		    markers: {
+		    	show: false,
+		    	type: 'square',
+		    	position: 'bottom-right'
+		    }
+		});
+        $('#carousel-text').carousel({
+		    auto: true,
+		    direction: 'top',
+		    controls: false,
+		    period: 5000,
+		    duration: 1000,
+		    markers: {
+		    	show: false,
+		    	type: 'square',
+		    	position: 'bottom-right'
+		    }
 		});
     })(jQuery);
 
