@@ -251,19 +251,7 @@ class Mtb extends CI_Model {
 		$box_id = $this->input->post('boxId', TRUE);
 		$box_type = $this->input->post('boxType', TRUE);
 
-		// if ($type == 'up') {
-		// 	$data = array(
-		// 		'id_content'		=> $id,
-		// 		'position'	=> ++$position
-		// 	);
-		// }else{
-		// 	$data = array(
-		// 		'id_content'		=> $id,
-		// 		'position'	=> --$position
-		// 	);
-		// }
-		// $this->db->update('content', $data, 'id_content');
-		$this->db->query("call change_pos($id, $position, '$type', $box_id, $box_type)");
+		$this->db->query("call chps($id, $position, '$type', $box_id, $box_type)");
 	}
 	
 	public function edit_text($id_box)
