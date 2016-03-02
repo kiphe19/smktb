@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Mar 02, 2016 at 06:40 AM
+-- Generation Time: Mar 02, 2016 at 12:40 PM
 -- Server version: 5.6.21
 -- PHP Version: 5.6.3
 
@@ -74,7 +74,8 @@ SET
     END
 WHERE
     `id_box` = id_box
-        AND `type` = content_type;
+    
+    AND `type` = "'"+content_type+"'";
 
 
 END$$
@@ -103,9 +104,9 @@ CREATE TABLE IF NOT EXISTS `content` (
 --
 
 INSERT INTO `content` (`id_content`, `id_box`, `type`, `title`, `content`, `position`, `uploaded`, `status`) VALUES
-(25, 1, '1', '', '11958858_947643425276827_1368693301_n.mp4', 1, '2016-03-02 05:32:37', '0'),
-(26, 1, '1', '', 'oploverz_-_731_mp4_360p.mp4', 2, '2016-03-02 05:32:37', '0'),
-(27, 1, '3', 'Testing', '<span style="font-weight: bold;">jdasdhsadhsahda</span><p><br></p>', 1, '2016-03-02 05:38:11', '1');
+(25, 1, '1', '', '11958858_947643425276827_1368693301_n.mp4', 2, '2016-03-02 05:49:02', '0'),
+(26, 1, '1', '', 'oploverz_-_731_mp4_360p.mp4', 1, '2016-03-02 05:49:02', '0'),
+(27, 1, '3', 'Testing', '<span style="font-weight: bold;">jdasdhsadhsahda</span><p><br></p>', 1, '2016-03-02 05:48:42', '1');
 
 -- --------------------------------------------------------
 
