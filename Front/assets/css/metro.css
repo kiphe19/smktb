@@ -4700,10 +4700,10 @@ a.tag {
   display: block;
   width: 100%;
 }
-.flex-grid .row {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: flex;
+  .flex-grid .row {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: flex;
 }
 .flex-grid .row .cell {
   -webkit-box-flex: 0 0 8.33333333%;

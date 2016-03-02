@@ -11,8 +11,9 @@
 		<style type="text/css" media="screen">
 			video{
 				min-width: 100%;
-				height: auto;
-				max-height: 47.5vh;
+				max-width: 100%;
+				min-height: 100%
+				max-height: 100%;
 				object-fit: fill; 
 			}
 			img{
@@ -28,17 +29,16 @@
 			<div class="row" style="height: 47.5vh">
 				<div class="cell colspan6 bg-blue">
 					<video autobuffer autoloop loop autoplay>
-						<source src="../media/video/asds.mp4">
-						<source src="../media/video/asd.m4v">
+						<source src="../media/video/Video.mp4">
+						<source src="../media/video/Video2.mkv">
 					</video>
-					Box 1
 				</div>
-				<div class="cell colspan6 bg-lighterBlue">
+				<div class="cell colspan6 bg-lighterBlue" style="border-bottom: 1px solid black;border-left: 1px solid red">
 					Box 2
 				</div>
 			</div>
 			<div class="row" style="height: 47.5vh">
-				<div class="cell colspan6 bg-green">
+				<div class="cell colspan6 bg-green" style="border-right: 1px solid black;border-top: 1px solid red">
 					<div class="carousel" id="carousel-img">
 						<div class="slide">
 					    	<img src="../media/image/1.jpg">
@@ -108,6 +108,7 @@
 		    effect: 'slowdown',
 		    direction: 'left',
 		    controls: false,
+		    top: false,
 		    period: 5000,
 		    duration: 1000,
 		    markers: {
@@ -120,6 +121,7 @@
 		    auto: true,
 		    direction: 'right',
 		    controls: false,
+		    top: false,
 		    period: 5000,
 		    duration: 1000,
 		    markers: {
