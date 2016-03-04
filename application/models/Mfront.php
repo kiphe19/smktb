@@ -12,6 +12,7 @@ class Mfront extends CI_Model {
 		$this->db->select('*');
 		$this->db->where('id_box', 1);
 		$this->db->where('type', $type['type']);
+		$this->db->order_by('position', 'ASC');
 		$data['content'] = $this->db->get('content')->result();
 		$data['type'] = $type['type'];
 		return $data;
@@ -25,6 +26,7 @@ class Mfront extends CI_Model {
 		$this->db->select('*');
 		$this->db->where('id_box', 2);
 		$this->db->where('type', $type['type']);
+		$this->db->order_by('position', 'ASC');
 		$data['content'] = $this->db->get('content')->result();
 		$data['type'] = $type['type'];
 		return $data;
@@ -38,6 +40,7 @@ class Mfront extends CI_Model {
 		$this->db->select('*');
 		$this->db->where('id_box', 3);
 		$this->db->where('type', $type['type']);
+		$this->db->order_by('position', 'ASC');
 		$data['content'] = $this->db->get('content')->result();
 		$data['type'] = $type['type'];
 		return $data;
@@ -51,6 +54,7 @@ class Mfront extends CI_Model {
 		$this->db->select('*');
 		$this->db->where('id_box', 4);
 		$this->db->where('type', $type['type']);
+		$this->db->order_by('position', 'ASC');
 		$data['content'] = $this->db->get('content')->result();
 		$data['type'] = $type['type'];
 		return $data;

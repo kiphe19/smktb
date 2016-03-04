@@ -48,20 +48,24 @@
 							</tr>
 						</thead>
 						<tbody id="content">
-							<?php foreach ($content as $key): ?>
+							<?php $pos = 1; foreach ($content as $key): ?>
 							<tr class="text-cont" data-id="<?php echo $key->id_content ?>">
 								<td class="title"><?php echo $key->title ?></td>
 								<td class="hide content"><?php echo $key->content ?></td>
 								<td>
-									<button type="button" class="btn btn-flat btn-outline btn-success"><i class="fa fa-arrow-up"></i></button>
-									<button type="button" class="btn btn-flat btn-outline btn-success"><i class="fa fa-arrow-down"></i></button>
+									<?php if ($pos > 1): ?>
+									<button type="button" class="btn btn-flat btn-outline btn-success pos"  data-id="<?php echo $key->id_content?>" data-pos="<?php echo $key->position;?>" position-type="up" box-type="<?php echo $data['type'] ?>" box-id="<?php echo $key->id_box?>"><i class="fa fa-arrow-up"></i></button>
+									<?php endif ?>
+									<?php if ($pos < $sum_data): ?>
+									<button type="button" class="btn btn-flat btn-outline btn-success pos"  data-id="<?php echo $key->id_content?>" data-pos="<?php echo $key->position;?>" position-type="down" box-type="<?php echo $data['type'] ?>" box-id="<?php echo $key->id_box?>"><i class="fa fa-arrow-down"></i></button>
+									<?php endif ?>
 								</td>
 								<td>
 									<button class="btn btn-outline btn-primary" data-toggle="modal" data-target="#myModal5" edit>Edit</button>
 									<a href="<?php echo base_url('ctb/box/'.$this->uri->segment(3).'/text/delete-content/') ?>" data-id="<?php echo $key->id_content ?>" class="btn btn-outline btn-danger" delete>Delete</a>
 								</td>
 							</tr>
-							<?php endforeach ?>
+							<?php $pos++; endforeach ?>
 						</tbody>
 					</table>
 				</div>
@@ -211,5 +215,27 @@ $(document).ready(function() {
 		})
 		return false;
 	});
+	$('#table').on('click', 'button.pos', function(e){
+			var attr = $(this).attr('data-pos'),
+				id = $(this).attr('data-id'),
+				type = $(this).attr('position-type'),
+				box_id = $(this).attr('box-id'),
+				box_type = $(this).attr('box-type');
+
+				if (type === 'up') {
+					var data = {id: id, type: 'up', pos: attr, boxId: box_id, boxType: box_type};
+				}else{
+					var data = {id: id, type: 'down', pos: attr, boxId: box_id, boxType: box_type};
+				}
+				$.ajax({
+					url: '<?php echo base_url('Ctb/chpos'); ?>',
+					data: data,
+					type: 'post',
+					success: function(resp){
+						$('tbody').html(resp.data);
+						toast(resp.success, resp.msg);
+					}
+				})
+		})
 });
 </script>

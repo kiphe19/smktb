@@ -37,9 +37,18 @@ class Ctb extends CI_Controller {
 		$this->db->order_by('position', 'ASC');
 		$content = $this->db->get()->result();
 
+		$this->db->select('id_content');
+		$this->db->from('content c');
+		$this->db->join('main m', 'c.id_box = m.id_box');
+		$this->db->where('m.id_box', $id);
+		$this->db->where('c.type', $main['type']);
+		$this->db->order_by('position', 'ASC');
+		$sum_data = $this->db->get()->num_rows();
+
 		$data['title'] = "Box " . $id;
 		$data['data'] = $main;
 		$data['content'] = $content;
+		$data['sum_data'] = $sum_data;
 		$this->load->view('index', $data);
 	}
 	public function saveType()
@@ -91,6 +100,10 @@ class Ctb extends CI_Controller {
 	public function uploadPict($id_box = NULL)
 	{
 		($this->input->method() == "post") ? $this->Mtb->upload_picture($id_box) : redirect('ctb','refresh') ;
+	}
+	public function chpos()
+	{
+		($this->input->is_ajax_request()) ? $this->Mtb->change_position() : redirect('ctb', 'refresh');
 	}
 	public function editText($id_box = 1)
 	{

@@ -39,20 +39,24 @@
 							</tr>
 						</thead>
 						<tbody>
-							<?php foreach ($content as $key): ?>
+							<?php $pos = 1; foreach ($content as $key): ?>
 								<?php $par = (strlen($key->content) > 20) ? "..." : ""; ?>
 								<tr class="vid-cont">
 									<td><a href="" title="<?php echo $key->content ?>"><?php echo substr($key->content, 0, 20) . $par; ?></a></td>
 									<td>
-										<button type="button" class="btn btn-flat btn-outline btn-success"><i class="fa fa-arrow-up" onclick="up(<?php echo $key->position;?>);"></i></button>
-										<button type="button" class="btn btn-flat btn-outline btn-success" onclick="down(<?php echo $key->position;?>)"><i class="fa fa-arrow-down"></i></button>
+										<?php if ($pos > 1): ?>
+										<button type="button" class="btn btn-flat btn-outline btn-success pos" data-id="<?php echo $key->id_content?>" data-pos="<?php echo $key->position;?>" position-type="up" box-type="<?php echo $data['type'] ?>" box-id="<?php echo $key->id_box?>"><i class="fa fa-arrow-up"></i></button>
+										<?php endif ?>
+										<?php if ($pos < $sum_data): ?>
+										<button type="button" class="btn btn-flat btn-outline btn-success pos" data-id="<?php echo $key->id_content?>" data-pos="<?php echo $key->position;?>" position-type="down" box-type="<?php echo $data['type'] ?>" box-id="<?php echo $key->id_box?>"><i class="fa fa-arrow-down"></i></button>
+										<?php endif ?>
 									</td>
 									<td>
 										<a href="#" class="btn btn-flat btn-outline btn-primary"><i class="fa fa-eye"></i></a>
 										<a href="<?php echo base_url('ctb/box/'.$this->uri->segment(3).'/video/delete-content') ?>" class="btn btn-outline btn-danger" data-id="<?php echo $key->id_content ?>" data-name="<?php echo $key->content ?>" delete><i class="fa fa-trash"></i> Delete</a>
 									</td>
 								</tr>
-							<?php endforeach ?>
+							<?php $pos++; endforeach ?>
 						</tbody>
 					</table>
 				</div>
@@ -132,10 +136,32 @@
 						me.closest('tr').remove();
 						count()
 					}
-					alert(resp.success, resp.msg)
+					toast(resp.success, resp.msg)
 				}
 			})
 			return false;
 		});
+		$('#table').on('click', 'button.pos', function(e){
+			var attr = $(this).attr('data-pos'),
+				id = $(this).attr('data-id'),
+				type = $(this).attr('position-type'),
+				box_id = $(this).attr('box-id'),
+				box_type = $(this).attr('box-type');
+
+				if (type === 'up') {
+					var data = {id: id, type: 'up', pos: attr, boxId: box_id, boxType: box_type};
+				}else{
+					var data = {id: id, type: 'down', pos: attr, boxId: box_id, boxType: box_type};
+				}
+				$.ajax({
+					url: '<?php echo base_url('Ctb/chpos'); ?>',
+					data: data,
+					type: 'post',
+					success: function(resp){
+						$('tbody').html(resp.data);
+						toast(resp.success, resp.msg);
+					}
+				})
+		})
 	});
 </script>

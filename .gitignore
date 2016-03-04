@@ -1,3 +1,9 @@
+<<<<<<< HEAD
+*.mkv
+*.wmp
+*.mp4
+/.phpintel
+=======
 .DS_Store
 
 application/cache/*
@@ -25,3 +31,4 @@ user_guide_src/cilexer/pycilexer.egg-info/*
 *.stTheme.cache
 *.sublime-workspace
 *.sublime-project
+>>>>>>> c3493d1e0d1208bfe93b55a8b2796e62fe2ad9b7

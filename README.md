@@ -1,2 +1,0 @@
-# smktb
-Hello World!
