@@ -26,13 +26,13 @@
 	<body>
 		<div class="flex-grid">
 			<div class="row" style="height: 47.5vh">
-				<div class="cell colspan6 bg-blue">
+				<div class="cell colspan6" style="padding: <?php echo ($box1['type'] == 3) ? "15px" : "0" ; ?>">
 					<?php
 						$data['content'] = $box1['content']; 
 						$this->load->view('front/'.$box1['type'], $data); 
 					?>
 				</div>
-				<div class="cell colspan6 bg-lighterBlue">
+				<div class="cell colspan6" style="padding: <?php echo ($box2['type'] == 3) ? "15px" : "0" ; ?>">
 					<?php
 						$data['content'] = $box2['content']; 
 						$this->load->view('front/'.$box2['type'], $data); 
@@ -40,13 +40,13 @@
 				</div>
 			</div>
 			<div class="row" style="height: 47.5vh">
-				<div class="cell colspan6 bg-green">
+				<div class="cell colspan6" style="padding: <?php echo ($box3['type'] == 3) ? "15px" : "0" ; ?>">
 					<?php
 						$data['content'] = $box3['content']; 
 						$this->load->view('front/'.$box3['type'], $data); 
 					?>
 				</div>
-				<div class="cell colspan6 bg-lightGreen">
+				<div class="cell colspan6" style="padding: <?php echo ($box4['type'] == 3) ? "15px" : "0" ; ?>">
 					<?php
 						$data['content'] = $box4['content']; 
 						$this->load->view('front/'.$box4['type'], $data); 

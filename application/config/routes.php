@@ -58,5 +58,6 @@ $route['ctb/box/(:num)/video/delete-content'] 	= 'ctb/deleteContentVideo';
 $route['ctb/box/(:num)/picture/delete-content'] = 'ctb/deleteContentPicture';
 $route['ctb/box/(:num)/picture/upload']		 	= 'ctb/uploadPict/$1';
 $route['ctb/box/(:num)/video/upload']		 	= 'ctb/uploadVid/$1';
+$route['logout']							 	= 'ctb/logout';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;

@@ -52,7 +52,7 @@
 										<?php endif ?>
 									</td>
 									<td>
-										<a href="#" class="btn btn-flat btn-outline btn-primary"><i class="fa fa-eye"></i></a>
+										<!-- <a href="#" class="btn btn-flat btn-outline btn-primary"><i class="fa fa-eye"></i></a> -->
 										<a href="<?php echo base_url('ctb/box/'.$this->uri->segment(3).'/video/delete-content') ?>" class="btn btn-outline btn-danger" data-id="<?php echo $key->id_content ?>" data-name="<?php echo $key->content ?>" delete><i class="fa fa-trash"></i> Delete</a>
 									</td>
 								</tr>
@@ -115,7 +115,7 @@
 			},
 			success: function(a, resp){
 				var a = JSON.parse(resp);
-				$('tbody').append(a.data)
+				$('tbody').html(a.data)
 				toast(a.success, a.msg);
 			}
 		}
@@ -133,7 +133,8 @@
 				},
 				success: function(resp){
 					if (resp.success == true) {
-						me.closest('tr').remove();
+						// me.closest('tr').remove();
+						$('tbody').html(resp.data);
 						count()
 					}
 					toast(resp.success, resp.msg)

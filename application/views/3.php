@@ -155,7 +155,7 @@ $(document).ready(function() {
 		 	success: function(resp){
 		 		// console.log(resp)
 		 		alert(resp.success, resp.msg);
-		 		$('#content').append(resp.data);
+		 		$('#content').html(resp.data);
 		 		count()
 				$('.note-editable').html("<p><br></p>")
 		 		$('#text').val('');
@@ -174,7 +174,8 @@ $(document).ready(function() {
 			data: {id: id},
 			success: function(resp){
 				if (resp.success) {
-					me.closest('tr').remove();
+					// me.closest('tr').remove();
+					$('tbody').html(resp.data)
 					count();
 				}
 				alert(resp.success, resp.msg)
@@ -190,7 +191,7 @@ $(document).ready(function() {
 		$('#editTitle').val(title);
 		$('#editContent').text(content);
 		$('#editContent').closest('div.scroll-content').children('div.note-editor').children('div.note-editable').html(content);
-		console.log(content)
+		// console.log(content)
 	});
 	$('#edit').submit(function() {
 		var url = $(this).attr('action'), 
@@ -207,7 +208,8 @@ $(document).ready(function() {
 			},
 			success:function(resp){
 				if (resp.success) {
-					$('tr[data-id="'+resp.id+'"]').html(resp.updated);
+					// $('tr[data-id="'+resp.id+'"]').html(resp.updated);
+					$('#content').html(resp.updated);
 				}
 				count();
 				alert(resp.success, resp.msg)
@@ -222,20 +224,20 @@ $(document).ready(function() {
 				box_id = $(this).attr('box-id'),
 				box_type = $(this).attr('box-type');
 
-				if (type === 'up') {
-					var data = {id: id, type: 'up', pos: attr, boxId: box_id, boxType: box_type};
-				}else{
-					var data = {id: id, type: 'down', pos: attr, boxId: box_id, boxType: box_type};
+			if (type === 'up') {
+				var data = {id: id, type: 'up', pos: attr, boxId: box_id, boxType: box_type};
+			}else{
+				var data = {id: id, type: 'down', pos: attr, boxId: box_id, boxType: box_type};
+			}
+			$.ajax({
+				url: '<?php echo base_url('Ctb/chpos'); ?>',
+				data: data,
+				type: 'post',
+				success: function(resp){
+					$('tbody').html(resp.data);
+					toast(resp.success, resp.msg);
 				}
-				$.ajax({
-					url: '<?php echo base_url('Ctb/chpos'); ?>',
-					data: data,
-					type: 'post',
-					success: function(resp){
-						$('tbody').html(resp.data);
-						toast(resp.success, resp.msg);
-					}
-				})
+			})
 		})
 });
 </script>

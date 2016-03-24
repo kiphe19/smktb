@@ -38,19 +38,33 @@ class Mtb extends CI_Model {
 		$id = $this->db->insert_id();
 		$msg = ($insert == 1) ? "Text Berhasil ditambahkan" : "Text Gagal ditambahkan";
 		if ($insert == 1) {
-				$html = 
-				'<tr class="text-cont" data-id="'.$id.'">' .
-					'<td class="title">' . $data['title'] . '</td>' .
-					'<td class="hide content">' . $data['content'] . '</td>' . 
-					'<td>' .
-						'<button type="button" class="btn btn-flat btn-outline btn-success pos" data-id="'.$id.'" data-pos="'.$data['position'].'" position-type="up" box-type="'.$data['type'].'" box-id="'.$data['id_box'].'"><i class="fa fa-arrow-up"></i></button> ' .
-						// '<button type="button" class="btn btn-flat btn-outline btn-success pos" data-id="'.$id.'" data-pos="'.$data['position'].'" position-type="down" box-type="'.$data['type'].'" box-id="'.$data['id_box'].'"><i class="fa fa-arrow-down"></i></button>' .
-					'</td>' .
+			$this->db->select('*');
+			$this->db->where('id_box', $data['id_box']);
+			$this->db->where('type', $data['type']);
+			$this->db->order_by('position', 'asc');
+			$result = $this->db->get('content')->result();
+
+			$this->db->select('id_content');
+			$this->db->where('id_box', $data['id_box']);
+			$this->db->where('type', $data['type']);
+			$this->db->from('content');
+			$sum = $this->db->count_all_results();
+
+			$html = "";
+			foreach ($result as $key) {
+				$btn_up = ($key->position > 1) ? '<button type="button" class="btn btn-flat btn-outline btn-success pos" data-id="'.$key->id_content.'" data-pos="'.$key->position.'" position-type="up" box-type="'.$key->type.'" box-id="'.$key->id_box.'"><i class="fa fa-arrow-up"></i></button> ' : ' ' ;
+				$btn_down = ($key->position < $sum) ? '<button type="button" class="btn btn-flat btn-outline btn-success pos" data-id="'.$key->id_content.'" data-pos="'.$key->position.'" position-type="down" box-type="'.$key->type.'" box-id="'.$key->id_box.'"><i class="fa fa-arrow-down"></i></button>' : ' ' ;
+				$html .= 
+				'<tr class="text-cont" data-id="'.$key->id_content.'">' .
+					'<td class="title">' . $key->title . '</td>' .
+					'<td class="hide content">' . $key->content . '</td>' . 
+					'<td>' . $btn_up . $btn_down . '</td>' .
 					'<td>' .
 						'<button class="btn btn-outline btn-primary" data-toggle="modal" data-target="#myModal5" edit>Edit</button> ' .
-						'<a href="' . base_url('ctb/box/'.$data['id_box'].'/text/delete-content') . '" data-id="'.$id.'" class="btn btn-outline btn-danger" delete>Delete</a> ' . 
+						'<a href="' . base_url('ctb/box/'.$key->id_box.'/text/delete-content') . '" data-id="'.$key->id_content.'" class="btn btn-outline btn-danger" delete>Delete</a> ' . 
 					'</td>' .
 				'</tr>';
+			}
 			$resp = array(
 				'success'	=> true,
 				'msg' 		=> "Text Berhasil ditambahkan",
@@ -68,74 +82,212 @@ class Mtb extends CI_Model {
 	public function deleteContentText($id_box)
 	{
 		$id_content = $this->input->post('id');
+		$this->db->select('position');
+		$this->db->where('id_content', $id_content);
+		$miss_pos = $this->db->get('content')->row_array();
+
 		$this->db->where('id_box', $id_box);
 		$this->db->where('id_content', $id_content);
 		$delete = $this->db->delete('content');
+
 		$resp = array();
 		if ($delete == 1) {
-			$resp['success'] = true;
-			$resp['msg'] = "Text Berhasil Di Hapus";
+			$this->db->select('id_content, position');
+			$this->db->where('id_box', $id_box);
+			$this->db->where('type', '3');
+			$this->db->where('position >', $miss_pos['position']);
+			$pos_bottom = $this->db->get('content')->result();
+			foreach ($pos_bottom as $now) {
+				$this->db->set('position', --$now->position);
+				$this->db->where('id_content', $now->id_content);
+				$this->db->update('content');
+			}
+
+			$this->db->select('*');
+			$this->db->where('id_box', $id_box);
+			$this->db->where('type', '3');
+			$this->db->order_by('position', 'asc');
+			$result = $this->db->get('content')->result();
+
+			$this->db->select('id_content');
+			$this->db->where('id_box', $id_box);
+			$this->db->where('type', '3');
+			$this->db->from('content');
+			$sum = $this->db->count_all_results();
+
+			$html = "";
+			foreach ($result as $key) {
+				$btn_up = ($key->position > 1) ? '<button type="button" class="btn btn-flat btn-outline btn-success pos" data-id="'.$key->id_content.'" data-pos="'.$key->position.'" position-type="up" box-type="'.$key->type.'" box-id="'.$key->id_box.'"><i class="fa fa-arrow-up"></i></button> ' : ' ' ;
+				$btn_down = ($key->position < $sum) ? '<button type="button" class="btn btn-flat btn-outline btn-success pos" data-id="'.$key->id_content.'" data-pos="'.$key->position.'" position-type="down" box-type="'.$key->type.'" box-id="'.$key->id_box.'"><i class="fa fa-arrow-down"></i></button>' : ' ' ;
+				$html .= 
+				'<tr class="text-cont" data-id="'.$key->id_content.'">' .
+					'<td class="title">' . $key->title . '</td>' .
+					'<td class="hide content">' . $key->content . '</td>' . 
+					'<td>' . $btn_up . $btn_down . '</td>' .
+					'<td>' .
+						'<button class="btn btn-outline btn-primary" data-toggle="modal" data-target="#myModal5" edit>Edit</button> ' .
+						'<a href="' . base_url('ctb/box/'.$key->id_box.'/text/delete-content') . '" data-id="'.$key->id_content.'" class="btn btn-outline btn-danger" delete>Delete</a> ' . 
+					'</td>' .
+				'</tr>';
+			}
+			$resp['success']	= true;
+			$resp['msg']		= "Text Berhasil Dihapus";
+			$resp['data']		= $html;
 		} else {
-			$resp['success'] = false;
-			$resp['msg'] = "Text Gagal Di Hapus";
+			$resp['success'] 	= false;
+			$resp['msg'] 		= "Text Gagal dihapus";
 		}
+
 		header("Content-Type: text/json");
 		echo json_encode($resp);
+
+		// $this->db->where('id_box', $id_box);
+		// $this->db->where('id_content', $id_content);
+		// $delete = $this->db->delete('content');
+		// $resp = array();
+		// if ($delete == 1) {
+		// 	$resp['success'] = true;
+		// 	$resp['msg'] = "Text Berhasil Di Hapus";
+		// } else {
+		// 	$resp['success'] = false;
+		// 	$resp['msg'] = "Text Gagal Di Hapus";
+		// }
+		// header("Content-Type: text/json");
+		// echo json_encode($resp);
 	}
 	public function deleteContentVideo($id_box)
 	{
 		$id_content = $this->input->post('id_content');
-		$file_name = $this->input->post('name');
+		$file = "uploads/".$this->input->post('name');
+
+		if (is_file($file)) {
+			unlink($file);
+		}
+
+		$this->db->select('position');
+		$this->db->where('id_content', $id_content);
+		$miss_pos = $this->db->get('content')->row_array();
+
 		$this->db->where('id_box', $id_box);
 		$this->db->where('id_content', $id_content);
 		$delete = $this->db->delete('content');
+
 		$resp = array();
-		if ($delete) {
-			if (is_file("uploads/" . $file_name)) {
-				if (unlink('uploads/'.$file_name)) {
-					$resp['success'] 	= true;
-					$resp['msg'] 		= "Video Berhasil dihapus";
-				}
-				else {
-					$resp['success'] 	= true;
-					$resp['msg'] 		= "Video gagal dihapus dari Directory!";				
-				}
-			} else{
-				$resp['success'] 	= true;
-				$resp['msg'] 		= "Video yang dihapus tidak ada!";			
+		if ($delete == 1) {
+			$this->db->select('id_content, position');
+			$this->db->where('id_box', $id_box);
+			$this->db->where('type', '1');
+			$this->db->where('position >', $miss_pos['position']);
+			$pos_bottom = $this->db->get('content')->result();
+			foreach ($pos_bottom as $now) {
+				$this->db->set('position', --$now->position);
+				$this->db->where('id_content', $now->id_content);
+				$this->db->update('content');
 			}
+
+			$this->db->select('*');
+			$this->db->where('id_box', $id_box);
+			$this->db->where('type', '1');
+			$this->db->order_by('position', 'ASC');
+			$data = $this->db->get('content')->result();
+
+			$this->db->select('*');
+			$this->db->from('content');
+			$this->db->where('id_box', $id_box);
+			$this->db->where('type', '1');
+			$sum = $this->db->count_all_results();
+
+			$html = "";
+			foreach ($data as $key) {
+				$par = (strlen($key->content) > 20) ? "..." : "";
+				$up = ($key->position > 1) ? '<button type="button" class="btn btn-flat btn-outline btn-success pos" data-id="'.$key->id_content.'" data-pos="'.$key->position.'" position-type="up" box-type="'.$key->type.'" box-id="'.$key->id_box.'"><i class="fa fa-arrow-up"></i></button> ' : '';
+				$down = ($key->position < $sum) ? '<button type="button" class="btn btn-flat btn-outline btn-success pos" data-id="'.$key->id_content.'" data-pos="'.$key->position.'" position-type="down" box-type="'.$key->type.'" box-id="'.$key->id_box.'"><i class="fa fa-arrow-down"></i></button>' : '';
+				$html .= 
+					'<tr class="vid-cont">' .
+						'<td><a href="" title="'.$key->content.'">' . substr($key->content, 0, 20) . $par . '</td>' .
+						'<td>' . $up . $down . '</td>' .
+						'<td>' .
+							// '<button class="btn btn-outline btn-primary" data-toggle="modal" data-target="#myModal5" edit>Edit</button> ' .
+							'<a href="' . base_url('ctb/box/'.$key->id_box.'/video/delete-content') . '" data-id="'.$key->id_content.'" class="btn btn-outline btn-danger" data-name="'.$key->content.'" delete><i class="fa fa-trash"></i> Delete</a> ' . 
+						'</td>' .
+					'</tr>';
+			}
+			$resp['success']	= true;
+			$resp['msg']		= "Video Berhasil Dihapus";
+			$resp['data']		= $html;
 		} else {
 			$resp['success'] 	= false;
 			$resp['msg'] 		= "Video Gagal dihapus";
 		}
+
 		header("Content-Type: text/json");
 		echo json_encode($resp);
 	}
 	public function deleteContentPicture($id_box)
 	{
 		$id_content = $this->input->post('id_content');
-		$file_name	= $this->input->post('name');
+		$file = "uploads/".$this->input->post('name');
+
+		if (is_file($file)) {
+			unlink($file);
+		}
+
+		$this->db->select('position');
+		$this->db->where('id_content', $id_content);
+		$miss_pos = $this->db->get('content')->row_array();
+
 		$this->db->where('id_box', $id_box);
 		$this->db->where('id_content', $id_content);
 		$delete = $this->db->delete('content');
+
 		$resp = array();
 		if ($delete == 1) {
-			if (is_file("uploads/" . $file_name)) {
-				if (unlink('uploads/'.$file_name)) {
-					$resp['success'] = true;
-					$resp['msg'] = "Gambar berhasil dihapus";
-				} else {
-					$resp['success'] = true;
-					$resp['msg'] = "Gambar Gagal dihapus dari Directory!";
-				}
-			} else {
-				$resp['success'] = true;
-				$resp['msg'] = "Gambar yang dihapus tidak ada!";
+			$this->db->select('id_content, position');
+			$this->db->where('id_box', $id_box);
+			$this->db->where('type', '2');
+			$this->db->where('position >', $miss_pos['position']);
+			$pos_bottom = $this->db->get('content')->result();
+			foreach ($pos_bottom as $now) {
+				$this->db->set('position', --$now->position);
+				$this->db->where('id_content', $now->id_content);
+				$this->db->update('content');
 			}
+
+			$this->db->select('*');
+			$this->db->where('id_box', $id_box);
+			$this->db->where('type', '2');
+			$this->db->order_by('position', 'ASC');
+			$data = $this->db->get('content')->result();
+
+			$this->db->select('*');
+			$this->db->from('content');
+			$this->db->where('id_box', $id_box);
+			$this->db->where('type', '2');
+			$sum = $this->db->count_all_results();
+
+			$html = "";
+			foreach ($data as $key) {
+				$par = (strlen($key->content) > 20) ? "..." : "";
+				$up = ($key->position > 1) ? '<button type="button" class="btn btn-flat btn-outline btn-success pos" data-id="'.$key->id_content.'" data-pos="'.$key->position.'" position-type="up" box-type="'.$key->type.'" box-id="'.$key->id_box.'"><i class="fa fa-arrow-up"></i></button> ' : '';
+				$down = ($key->position < $sum) ? '<button type="button" class="btn btn-flat btn-outline btn-success pos" data-id="'.$key->id_content.'" data-pos="'.$key->position.'" position-type="down" box-type="'.$key->type.'" box-id="'.$key->id_box.'"><i class="fa fa-arrow-down"></i></button>' : '';
+				$html .= 
+					'<tr class="pict-cont">' .
+						'<td><a href="" title="'.$key->content.'">' . substr($key->content, 0, 20) . $par . '</td>' .
+						'<td>' . $up . $down . '</td>' .
+						'<td>' .
+							// '<button class="btn btn-outline btn-primary" data-toggle="modal" data-target="#myModal5" edit>Edit</button> ' .
+							'<a href="' . base_url('ctb/box/'.$key->id_box.'/picture/delete-content') . '" data-id="'.$key->id_content.'" class="btn btn-outline btn-danger" data-name="'.$key->content.'" delete><i class="fa fa-trash"></i> Delete</a> ' . 
+						'</td>' .
+					'</tr>';
+			}
+			$resp['success']	= true;
+			$resp['msg']		= "Gambar Berhasil Dihapus";
+			$resp['data']		= $html;
 		} else {
-			$resp['success'] = false;
-			$resp['msg'] = "Gambar Gagal dihapus";
+			$resp['success'] 	= false;
+			$resp['msg'] 		= "Gambar Gagal dihapus";
 		}
+
 		header("Content-Type: text/json");
 		echo json_encode($resp);
 	}
@@ -166,19 +318,45 @@ class Mtb extends CI_Model {
         	$insert = $this->db->insert('content', $data);
         	$id = $this->db->insert_id();
         	if ($insert) {
-				$par = (strlen($file) > 20) ? "..." : "";
-        		$html = 
-					'<tr class="vid-cont">' .
-						'<td><a href="" title="'.$file.'">' . substr($file, 0, 20) . $par . '</td>' .
-						'<td>' .
-							'<button type="button" class="btn btn-flat btn-outline btn-success" data-id="'.$id.'" data-pos="'.$data['position'].'" position-type="up" box-type="'.$data['type'].'" box-id="'.$data['id_box'].'"><i class="fa fa-arrow-up"></i></button> ' .
-							'<button type="button" class="btn btn-flat btn-outline btn-success" data-id="'.$id.'" data-pos="'.$data['position'].'" position-type="down" box-type="'.$data['type'].'" box-id="'.$data['id_box'].'"><i class="fa fa-arrow-down"></i></button>' .
-						'</td>' .
-						'<td>' .
-							'<a href="#" class="btn btn-flat btn-outline btn-primary"><i class="fa fa-eye"></i></a> ' .
-							'<a href="' . base_url('ctb/box/'.$id_box.'/video/delete-content') . '" data-id="'.$id.'" class="btn btn-outline btn-danger" data-id="'.$id.'" data-name="'.$file.'" delete><i class="fa fa-trash"></i> Delete</a> ' . 
-						'</td>' .
-					'</tr>';
+				$this->db->select('*');
+				$this->db->where('id_box', $id_box);
+				$this->db->where('type', '1');
+				$this->db->order_by('position', 'ASC');
+				$data = $this->db->get('content')->result();
+
+				$this->db->select('*');
+				$this->db->from('content');
+				$this->db->where('id_box', $id_box);
+				$this->db->where('type', '1');
+				$sum = $this->db->count_all_results();
+
+				$html = "";
+				foreach ($data as $key) {
+					$par = (strlen($key->content) > 20) ? "..." : "";
+					$up = ($key->position > 1) ? '<button type="button" class="btn btn-flat btn-outline btn-success pos" data-id="'.$key->id_content.'" data-pos="'.$key->position.'" position-type="up" box-type="'.$key->type.'" box-id="'.$key->id_box.'"><i class="fa fa-arrow-up"></i></button> ' : '';
+					$down = ($key->position < $sum) ? '<button type="button" class="btn btn-flat btn-outline btn-success pos" data-id="'.$key->id_content.'" data-pos="'.$key->position.'" position-type="down" box-type="'.$key->type.'" box-id="'.$key->id_box.'"><i class="fa fa-arrow-down"></i></button>' : '';
+					$html .= 
+						'<tr class="vid-cont">' .
+							'<td><a href="" title="'.$key->content.'">' . substr($key->content, 0, 20) . $par . '</td>' .
+							'<td>' . $up . $down . '</td>' .
+							'<td>' .
+								// '<button class="btn btn-outline btn-primary" data-toggle="modal" data-target="#myModal5" edit>Edit</button> ' .
+								'<a href="' . base_url('ctb/box/'.$key->id_box.'/video/delete-content') . '" data-id="'.$key->id_content.'" class="btn btn-outline btn-danger" data-name="'.$key->content.'" delete><i class="fa fa-trash"></i> Delete</a> ' . 
+							'</td>' .
+						'</tr>';
+				}
+     //    		$html = 
+					// '<tr class="vid-cont">' .
+					// 	'<td><a href="" title="'.$file.'">' . substr($file, 0, 20) . $par . '</td>' .
+					// 	'<td>' .
+					// 		'<button type="button" class="btn btn-flat btn-outline btn-success" data-id="'.$id.'" data-pos="'.$data['position'].'" position-type="up" box-type="'.$data['type'].'" box-id="'.$data['id_box'].'"><i class="fa fa-arrow-up"></i></button> ' .
+					// 		'<button type="button" class="btn btn-flat btn-outline btn-success" data-id="'.$id.'" data-pos="'.$data['position'].'" position-type="down" box-type="'.$data['type'].'" box-id="'.$data['id_box'].'"><i class="fa fa-arrow-down"></i></button>' .
+					// 	'</td>' .
+					// 	'<td>' .
+					// 		'<a href="#" class="btn btn-flat btn-outline btn-primary"><i class="fa fa-eye"></i></a> ' .
+					// 		'<a href="' . base_url('ctb/box/'.$id_box.'/video/delete-content') . '" data-id="'.$id.'" class="btn btn-outline btn-danger" data-id="'.$id.'" data-name="'.$file.'" delete><i class="fa fa-trash"></i> Delete</a> ' . 
+					// 	'</td>' .
+					// '</tr>';
 	        	$response = array(
 	        		"success"		=> true,
 	        		"msg"			=> "Video ".$file." Berhasil Di Upload",
@@ -223,19 +401,46 @@ class Mtb extends CI_Model {
 			$insert = $this->db->insert('content', $data);
 			$id = $this->db->insert_id();
 			if ($insert) {
-				$par = (strlen($file) > 20) ? "..." : "";
-				$html = 
-					'<tr class="pict-cont">' .
-						'<td><a href="" title="'.$file.'">' . substr($file, 0, 20) . $par . '</td>' .
-						'<td>' .
-							'<button type="button" class="btn btn-flat btn-outline btn-success" data-id="'.$id.'" data-pos="'.$data['position'].'" position-type="up" box-type="'.$data['type'].'" box-id="'.$data['id_box'].'"><i class="fa fa-arrow-up"></i></button> ' .
-							'<button type="button" class="btn btn-flat btn-outline btn-success" data-id="'.$id.'" data-pos="'.$data['position'].'" position-type="down" box-type="'.$data['type'].'" box-id="'.$data['id_box'].'"><i class="fa fa-arrow-down"></i></button>' .
-						'</td>' .
-						'<td>' .
-							'<a href="#" class="btn btn-flat btn-outline btn-primary"><i class="fa fa-eye"></i></a> ' .
-							'<a href="' . base_url('ctb/box/'.$id_box.'/video/delete-content') . '" data-id="'.$id.'" class="btn btn-outline btn-danger" data-id="'.$id.'" data-name="'.$file.'" delete><i class="fa fa-trash"></i> Delete</a> ' . 
-						'</td>' .
-					'</tr>';
+				$this->db->select('*');
+				$this->db->where('id_box', $id_box);
+				$this->db->where('type', '2');
+				$this->db->order_by('position', 'ASC');
+				$data = $this->db->get('content')->result();
+
+				$this->db->select('*');
+				$this->db->from('content');
+				$this->db->where('id_box', $id_box);
+				$this->db->where('type', '2');
+				$sum = $this->db->count_all_results();
+
+				$html = "";
+				foreach ($data as $key) {
+					$par = (strlen($key->content) > 20) ? "..." : "";
+					$up = ($key->position > 1) ? '<button type="button" class="btn btn-flat btn-outline btn-success pos" data-id="'.$key->id_content.'" data-pos="'.$key->position.'" position-type="up" box-type="'.$key->type.'" box-id="'.$key->id_box.'"><i class="fa fa-arrow-up"></i></button> ' : '';
+					$down = ($key->position < $sum) ? '<button type="button" class="btn btn-flat btn-outline btn-success pos" data-id="'.$key->id_content.'" data-pos="'.$key->position.'" position-type="down" box-type="'.$key->type.'" box-id="'.$key->id_box.'"><i class="fa fa-arrow-down"></i></button>' : '';
+					$html .= 
+						'<tr class="pict-cont">' .
+							'<td><a href="" title="'.$key->content.'">' . substr($key->content, 0, 20) . $par . '</td>' .
+							'<td>' . $up . $down . '</td>' .
+							'<td>' .
+								// '<button class="btn btn-outline btn-primary" data-toggle="modal" data-target="#myModal5" edit>Edit</button> ' .
+								'<a href="' . base_url('ctb/box/'.$key->id_box.'/video/delete-content') . '" data-id="'.$key->id_content.'" class="btn btn-outline btn-danger" data-name="'.$key->content.'" delete><i class="fa fa-trash"></i> Delete</a> ' . 
+							'</td>' .
+						'</tr>';
+				}
+				// $par = (strlen($file) > 20) ? "..." : "";
+				// $html = 
+				// 	'<tr class="pict-cont">' .
+				// 		'<td><a href="" title="'.$file.'">' . substr($file, 0, 20) . $par . '</td>' .
+				// 		'<td>' .
+				// 			'<button type="button" class="btn btn-flat btn-outline btn-success" data-id="'.$id.'" data-pos="'.$data['position'].'" position-type="up" box-type="'.$data['type'].'" box-id="'.$data['id_box'].'"><i class="fa fa-arrow-up"></i></button> ' .
+				// 			'<button type="button" class="btn btn-flat btn-outline btn-success" data-id="'.$id.'" data-pos="'.$data['position'].'" position-type="down" box-type="'.$data['type'].'" box-id="'.$data['id_box'].'"><i class="fa fa-arrow-down"></i></button>' .
+				// 		'</td>' .
+				// 		'<td>' .
+				// 			'<a href="#" class="btn btn-flat btn-outline btn-primary"><i class="fa fa-eye"></i></a> ' .
+				// 			'<a href="' . base_url('ctb/box/'.$id_box.'/video/delete-content') . '" data-id="'.$id.'" class="btn btn-outline btn-danger" data-id="'.$id.'" data-name="'.$file.'" delete><i class="fa fa-trash"></i> Delete</a> ' . 
+				// 		'</td>' .
+				// 	'</tr>';
 				$response = array( 
 					'success'	=> true,
 					'msg' 		=> "Gambar ".$file." Berhasil di upload",
@@ -275,24 +480,53 @@ class Mtb extends CI_Model {
 
 		$html = "";
 		$pos = 1;
-		foreach ($data as $key) {
-			$par = (strlen($key->content) > 20) ? "..." : "";
-			$key->content = ($box_type == 3) ? $key->title : $key->content;
-			$up = ($pos > 1) ? '<button type="button" class="btn btn-flat btn-outline btn-success pos" data-id="'.$key->id_content.'" data-pos="'.$key->position.'" position-type="up" box-type="'.$box_type.'" box-id="'.$key->id_box.'"><i class="fa fa-arrow-up"></i></button> ' : '';
-			$down = ($pos < $sum) ? '<button type="button" class="btn btn-flat btn-outline btn-success pos" data-id="'.$key->id_content.'" data-pos="'.$key->position.'" position-type="down" box-type="'.$box_type.'" box-id="'.$key->id_box.'"><i class="fa fa-arrow-down"></i></button>' : '';
-			$html .= 
-				'<tr class="vid-cont">' .
-					'<td><a href="" title="'.$key->content.'">' . substr($key->content, 0, 20) . $par . '</td>' .
+		if ($box_type == '1') {
+			foreach ($data as $key) {
+				$par = (strlen($key->content) > 20) ? "..." : "";
+				$up = ($pos > 1) ? '<button type="button" class="btn btn-flat btn-outline btn-success pos" data-id="'.$key->id_content.'" data-pos="'.$key->position.'" position-type="up" box-type="'.$box_type.'" box-id="'.$key->id_box.'"><i class="fa fa-arrow-up"></i></button> ' : '';
+				$down = ($pos < $sum) ? '<button type="button" class="btn btn-flat btn-outline btn-success pos" data-id="'.$key->id_content.'" data-pos="'.$key->position.'" position-type="down" box-type="'.$box_type.'" box-id="'.$key->id_box.'"><i class="fa fa-arrow-down"></i></button>' : '';
+				$html .= 
+					'<tr class="vid-cont">' .
+						'<td><a href="" title="'.$key->content.'">' . substr($key->content, 0, 20) . $par . '</td>' .
+						'<td>' . $up . $down . '</td>' .
+						'<td>' .
+							// '<button class="btn btn-outline btn-primary" data-toggle="modal" data-target="#myModal5" edit>Edit</button> ' .
+							'<a href="' . base_url('ctb/box/'.$box_id.'/video/delete-content') . '" data-id="'.$key->id_content.'" class="btn btn-outline btn-danger" data-name="'.$key->content.'" delete><i class="fa fa-trash"></i> Delete</a> ' . 
+						'</td>' .
+					'</tr>';
+				$pos++;
+			}
+		} else if ($box_type == '2') {
+			foreach ($data as $key) {
+				$par = (strlen($key->content) > 20) ? "..." : "";
+				$up = ($pos > 1) ? '<button type="button" class="btn btn-flat btn-outline btn-success pos" data-id="'.$key->id_content.'" data-pos="'.$key->position.'" position-type="up" box-type="'.$box_type.'" box-id="'.$key->id_box.'"><i class="fa fa-arrow-up"></i></button> ' : '';
+				$down = ($pos < $sum) ? '<button type="button" class="btn btn-flat btn-outline btn-success pos" data-id="'.$key->id_content.'" data-pos="'.$key->position.'" position-type="down" box-type="'.$box_type.'" box-id="'.$key->id_box.'"><i class="fa fa-arrow-down"></i></button>' : '';
+				$html .= 
+					'<tr class="pict-cont">' .
+						'<td><a href="" title="'.$key->content.'">' . substr($key->content, 0, 20) . $par . '</td>' .
+						'<td>' . $up . $down . '</td>' .
+						'<td>' .
+							// '<button class="btn btn-outline btn-primary" data-toggle="modal" data-target="#myModal5" edit>Edit</button> ' .
+							'<a href="' . base_url('ctb/box/'.$box_id.'/picture/delete-content') . '" data-id="'.$key->id_content.'" class="btn btn-outline btn-danger" data-name="'.$key->content.'" delete><i class="fa fa-trash"></i> Delete</a> ' . 
+						'</td>' .
+					'</tr>';
+				$pos++;
+			}
+		} else if ($box_type == '3') {
+			foreach ($data as $key) {
+				$btn_up = ($key->position > 1) ? '<button type="button" class="btn btn-flat btn-outline btn-success pos" data-id="'.$key->id_content.'" data-pos="'.$key->position.'" position-type="up" box-type="'.$key->type.'" box-id="'.$key->id_box.'"><i class="fa fa-arrow-up"></i></button> ' : ' ' ;
+				$btn_down = ($key->position < $sum) ? '<button type="button" class="btn btn-flat btn-outline btn-success pos" data-id="'.$key->id_content.'" data-pos="'.$key->position.'" position-type="down" box-type="'.$key->type.'" box-id="'.$key->id_box.'"><i class="fa fa-arrow-down"></i></button>' : ' ' ;
+				$html .= 
+				'<tr class="text-cont" data-id="'.$key->id_content.'">' .
+					'<td class="title">' . $key->title . '</td>' .
+					'<td class="hide content">' . $key->content . '</td>' . 
+					'<td>' . $btn_up . $btn_down . '</td>' .
 					'<td>' .
-						 $up .
-						 $down .
-					'</td>' .
-					'<td>' .
-						'<a href="#" class="btn btn-flat btn-outline btn-primary"><i class="fa fa-eye"></i></a> ' .
-						'<a href="' . base_url('ctb/box/'.$box_id.'/video/delete-content') . '" data-id="'.$key->id_content.'" class="btn btn-outline btn-danger" data-name="'.$key->content.'" delete><i class="fa fa-trash"></i> Delete</a> ' . 
+						'<button class="btn btn-outline btn-primary" data-toggle="modal" data-target="#myModal5" edit>Edit</button> ' .
+						'<a href="' . base_url('ctb/box/'.$key->id_box.'/text/delete-content') . '" data-id="'.$key->id_content.'" class="btn btn-outline btn-danger" delete>Delete</a> ' . 
 					'</td>' .
 				'</tr>';
-			$pos++;
+			}
 		}
 		$resp = array(
 			'success' 	=> true, 
@@ -316,19 +550,44 @@ class Mtb extends CI_Model {
 		$update = $this->db->update('content');
 		$resp = array();
 		if ($update == 1) {
-			$html = 
-				// '<tr class="text-cont" data-id="'.$id.'">' .
-					'<td class="title">' . $title . '</td>' .
-					'<td class="hide content">' . $content . '</td>' . 
-					'<td>' .
-						'<button type="button" class="btn btn-flat btn-outline btn-success"><i class="fa fa-arrow-up"></i></button> ' .
-						'<button type="button" class="btn btn-flat btn-outline btn-success"><i class="fa fa-arrow-down"></i></button>' .
-					'</td>' .
+			// $html = 
+			// 	'<td class="title">' . $title . '</td>' .
+			// 	'<td class="hide content">' . $content . '</td>' . 
+			// 	'<td>' .
+			// 		'<button type="button" class="btn btn-flat btn-outline btn-success"><i class="fa fa-arrow-up"></i></button> ' .
+			// 		'<button type="button" class="btn btn-flat btn-outline btn-success"><i class="fa fa-arrow-down"></i></button>' .
+			// 	'</td>' .
+			// 	'<td>' .
+			// 		'<button class="btn btn-outline btn-primary" data-toggle="modal" data-target="#myModal5" edit>Edit</button> ' .
+			// 		'<a href="' . base_url('ctb/box/'.$id_box.'/text/delete-content') . '" data-id="'.$id.'" class="btn btn-outline btn-danger" delete>Delete</a> ' . 
+			// 	'</td>';
+			$this->db->select('*');
+			$this->db->where('id_box', $id_box);
+			$this->db->where('type', '3');
+			$this->db->order_by('position', 'asc');
+			$result = $this->db->get('content')->result();
+
+			$this->db->select('id_content');
+			$this->db->where('id_box', $id_box);
+			$this->db->where('type', '3');
+			$this->db->from('content');
+			$sum = $this->db->count_all_results();
+
+			$html = "";
+			foreach ($result as $key) {
+				$btn_up = ($key->position > 1) ? '<button type="button" class="btn btn-flat btn-outline btn-success pos" data-id="'.$key->id_content.'" data-pos="'.$key->position.'" position-type="up" box-type="'.$key->type.'" box-id="'.$key->id_box.'"><i class="fa fa-arrow-up"></i></button> ' : ' ' ;
+				$btn_down = ($key->position < $sum) ? '<button type="button" class="btn btn-flat btn-outline btn-success pos" data-id="'.$key->id_content.'" data-pos="'.$key->position.'" position-type="down" box-type="'.$key->type.'" box-id="'.$key->id_box.'"><i class="fa fa-arrow-down"></i></button>' : ' ' ;
+				$html .= 
+				'<tr class="text-cont" data-id="'.$key->id_content.'">' .
+					'<td class="title">' . $key->title . '</td>' .
+					'<td class="hide content">' . $key->content . '</td>' . 
+					'<td>' . $btn_up . $btn_down . '</td>' .
 					'<td>' .
 						'<button class="btn btn-outline btn-primary" data-toggle="modal" data-target="#myModal5" edit>Edit</button> ' .
-						'<a href="' . base_url('ctb/box/'.$id_box.'/text/delete-content') . '" data-id="'.$id.'" class="btn btn-outline btn-danger" delete>Delete</a> ' . 
-					'</td>';
-				// '</tr>';
+						'<a href="' . base_url('ctb/box/'.$key->id_box.'/text/delete-content') . '" data-id="'.$key->id_content.'" class="btn btn-outline btn-danger" delete>Delete</a> ' . 
+					'</td>' .
+				'</tr>';
+			}
 			$resp = array(
 				'success' 	=> true,
 				'id'		=> $id,

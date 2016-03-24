@@ -33,7 +33,7 @@
                             </span> 
                         </a>
                         <ul class="dropdown-menu animated fadeInRight m-t-xs">
-                            <li><a href="login.html"><i class="fa fa-sign-out"></i> Logout</a></li>
+                            <li><a href="<?php echo base_url('logout') ?>"><i class="fa fa-sign-out"></i> Logout</a></li>
                         </ul>
                     </div>
                     <div class="logo-element">
@@ -60,7 +60,7 @@
                     <span class="m-r-sm text-muted welcome-message">Welcome to SMK Taruna Bhakti Admin Page.</span>
                 </li>
                 <li>
-                    <a href="login.html">
+                    <a href="<?php echo base_url('logout') ?>">
                         <i class="fa fa-sign-out"></i> Log out
                     </a>
                 </li>

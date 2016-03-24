@@ -6,17 +6,16 @@ class Ctb extends CI_Controller {
 	{
 		parent::__construct();
 		$this->load->helper('text');
+		if (!$this->session->userdata('logged')) {
+			redirect('login','refresh');
+		}
 	}
-
 	public function index()
 	{
 		$data['title'] = "Dashboard";
 		$data['box'] = $this->Mtb->selectBox();
 		$this->load->view('index', $data);
 	}
-	// public function admin()
-	// {
-	// }
 	public function news()
 	{
 		$data['title'] = "News Text";
@@ -108,6 +107,11 @@ class Ctb extends CI_Controller {
 	public function editText($id_box = 1)
 	{
 		($this->input->method() == "post") ? $this->Mtb->edit_text($id_box) : redirect('ctb','refresh') ;
+	}
+	public function logout()
+	{
+		$this->session->sess_destroy();
+		redirect('login','refresh');
 	}
 }
 
